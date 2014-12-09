@@ -14,6 +14,7 @@ define(['backbone'], function(Backbone) {
 		vectorSize: 3,
 		transform: null,
 		color: null,
+		material: null,
 		initialize: function() {
 			this.transform = mat4.create();
 			this.vertices = [];
@@ -21,9 +22,22 @@ define(['backbone'], function(Backbone) {
 			this.indices = [];
 			this.vao = gl.createVertexArray();
 			this.color = [1, 1, 1, 1];
+
+			this.material = {
+				ambient: [0.2, 0.2, 0.2, 1.0],
+				diffuse: [0.8, 0.8, 0.8, 1.0],
+				specular: [0.5, 0.5, 0.5, 1.0],
+				emission: [0.0, 0.0, 0.0, 1.0],
+				shininess: 1
+			};
 		},
 		get vectorCount() {
 			return (_ref = this.vertices ? _ref.length : 0) / this.vectorSize;
+		},
+		setPosition: function(x, y, z) {
+			this.x = x;
+			this.y = y;
+			this.z = z;
 		},
 		draw: function() {
 			gl.bindVertexArray(this.vao);
@@ -39,11 +53,22 @@ define(['backbone'], function(Backbone) {
 
 			gl.setVecUniform('uColor', this.color);
 			gl.setMatUniform('uTransform', mPosition);
+
+			gl.setVecUniform('uMaterialAmbient', this.material.ambient);
+			gl.setVecUniform('uMaterialDiffuse', this.material.diffuse);
+			gl.setVecUniform('uMaterialSpecular', this.material.specular);
+			gl.setVecUniform('uMaterialEmission', this.material.emission);
+			gl.setScalarUniform('uMaterialShininess', this.material.shininess);
+
 			this.drawInternal();
 			gl.bindVertexArray(null);
 		},
 		drawInternal: function() {
 			gl.render('elements', this.indices.length);
+		},
+		setColor: function(r, g, b) {
+			var color = [r, g ,b , 1];
+			this.material.ambient = this.material.specular = this.material.diffuse = color;
 		}
 	});
 

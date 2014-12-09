@@ -178,6 +178,20 @@ GL.prototype = {
 
 		return unif;
 	},
+	setScalarUniform: function(name, data, dataType) {
+		if (!this._currentProgram) {
+			throw 'Error: No program';
+		}
+
+		dataType = dataType || 'f';
+
+
+		var unif = typeof name == 'string' ? this.ctx.getUniformLocation(this._currentProgram, name) : name;
+
+		this.ctx['uniform1' + dataType](unif, data);
+
+		return unif;
+	},
 	clear: function() {
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
 	},

@@ -1,7 +1,7 @@
 define([
-	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram'
+	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram', 'lights/Light'
 ],
-function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram) {
+function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 
 
 	// SETUP START
@@ -16,18 +16,48 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram) {
 
 	var program = new ClassicProgram();
 
+	/*
+	var xOffset = 0;
+	var last = false;
+
 	var box;
-	for (var i=0; i<200; i++) {
-		box = new Box(0.8, 0.02, 1.6);
+	for (var i=0; i<1; i++) {
+		if (i > 10 && !last && Math.round(Math.random() * 10) == 5) {
+			last = true;
+			continue;
+		}
+		last = false;
+		box = new Box(0.8, 0.05, 1.6);
 		box.y = box.y + 1.6 * i;
+		if (i > 3) xOffset += (Math.random() - 0.5) / 2;
+		box.x += xOffset;
 		program.addObject(box);
 	}
+
 
 	box = new Box(0.4, 0.2, 1.6);
 	box.y += 1.6*4;
 	box.z += 0.2;
 	program.addObject(box);
+	*/
 
+	var box;
+	box = new Box(3.0, 0.05, 3.0);
+	box.x = -1.5;
+	program.addObject(box);
+
+
+
+	// LIGHTS
+	var lantern = new Box(0.1, 0.1, 0.1);
+	lantern.setColor(1, 1, 0);
+	lantern.material.emission = [0.5, 0.5, 0.5, 1.0];
+	lantern.setPosition(0.4, 0.8, 0.2);
+	program.addObject(lantern);
+
+	var light = new Light();
+	light.setPosition(0.4, 0.8, 0.2);
+	program.addLight(light);
 
 
 
@@ -74,9 +104,11 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram) {
 
 	function handleKeys(ms) {
 		if (keys.isDown('LEFT')) {
-			spaceship.x -= 0.5 * ms;
+			spaceship.x -= spaceship.xSpeed * ms;
+			camera.x -= spaceship.xSpeed * ms;
 		} else if (keys.isDown('RIGHT')) {
-			spaceship.x += 0.5 * ms;
+			spaceship.x += spaceship.xSpeed * ms;
+			camera.x += spaceship.xSpeed * ms;
 		}
 
 		if (keys.isDown('UP') && spaceship.speed < spaceship.maxSpeed) {

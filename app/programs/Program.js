@@ -32,6 +32,34 @@ define(['backbone'], function(Backbone) {
 				throw new Error('Can\'t draw without camera');
 			}
 
+			// --- LIHGTS ---
+
+			var tex = gl.ctx.createTexture();
+			gl.ctx.activeTexture(gl.ctx.TEXTURE0);
+			gl.ctx.bindTexture(gl.ctx.TEXTURE_2D, tex);
+
+			var lightArr = [];
+			this.lights.forEach(function(light) {
+				light.addToArray(lightArr);
+			});
+
+			var oneDTextureTexels = new Uint8Array(lightArr);
+
+			//gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+			gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_MIN_FILTER, gl.ctx.LINEAR);
+			gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_WRAP_S, gl.ctx.CLAMP_TO_EDGE);
+			gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_WRAP_T, gl.ctx.CLAMP_TO_EDGE);
+
+			var width = oneDTextureTexels.length / 4;
+			var height = 1;
+			gl.ctx.texImage2D(gl.ctx.TEXTURE_2D, 0, gl.ctx.RGBA, width, height, 0, gl.ctx.RGBA, gl.ctx.UNSIGNED_BYTE, oneDTextureTexels);
+
+
+			gl.setScalarUniform('uLights', 0, 'i');
+			gl.setScalarUniform('uNumberOfLights', this.lights.length, 'i');
+			// gl.ctx.bindTexture(gl.ctx.TEXTURE_2D, null);
+			// ---------------
+
 			var pMatrix = mat4.create();
 			var cam = this.cameras[this.selectedCamera];
 			mat4.multiply(pMatrix, this.mProjection, cam.getMatrix());

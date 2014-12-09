@@ -1,6 +1,7 @@
 define(['objects/SceneObject', 'text!models/vehicle.obj'], function(SceneObject, vehicleModel) {
 	var Ship = SceneObject.extend({
 		maxSpeed: 0.12,
+		xSpeed: 1,
 		jumping: false,
 		jumpSpeed: 0,
 		x: 0.4,
@@ -18,6 +19,8 @@ define(['objects/SceneObject', 'text!models/vehicle.obj'], function(SceneObject,
 			var scaleBy = 0.0008;
 			mat4.scale(this.transform, this.transform, [scaleBy, scaleBy, scaleBy]);
 			mat4.rotateX(this.transform, this.transform, GL.degToRad(-90));
+
+			this.material.ambient = this.material.specular = this.material.diffuse = [0.2, 0.2, 0.5, 1];
 
 			gl.bindVertexArray(this.vao);
 			gl.setAttributes('pos', this.vertices, this.vectorSize);
