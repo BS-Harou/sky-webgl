@@ -18,7 +18,7 @@ uniform mat4 pMatrix;
 
 varying float posZ;
 varying vec3 vPos;
-varying vec3 n;
+varying vec3 vNormal;
 
 void main() {
 	vec4 finalColor = uMaterialEmission + uGlobalAmbient;
@@ -38,7 +38,7 @@ void main() {
 
 		vec3 L = normalize(lightPosition - vPos);
 		vec3 C = normalize(uCameraPosition - vPos);
-		vec3 N = normalize(n);
+		vec3 N = normalize(vNormal);
 		float d = distance(lightPosition, vPos);
 
 		vec4 ambientReflected = lightAmbient * uMaterialAmbient;

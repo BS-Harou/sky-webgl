@@ -54,6 +54,11 @@ define(['backbone'], function(Backbone) {
 			gl.setVecUniform('uColor', this.color);
 			gl.setMatUniform('uTransform', mPosition);
 
+			var mNorm = mat4.create();
+			mat4.invert(mNorm, mPosition);
+			mat4.transpose(mNorm, mNorm);
+			gl.setMatUniform('uNormalTransform', mNorm);
+
 			gl.setVecUniform('uMaterialAmbient', this.material.ambient);
 			gl.setVecUniform('uMaterialDiffuse', this.material.diffuse);
 			gl.setVecUniform('uMaterialSpecular', this.material.specular);

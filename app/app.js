@@ -46,7 +46,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 
 
 	// LIGHTS
-	var lantern = new Box(0.1, 0.1, 0.1);
+	var lantern = new Box(0.05, 0.05, 0.05);
 	lantern.setColor(1, 1, 0);
 	lantern.material.emission = [1, 1, 0.5, 1.0];
 	lantern.setPosition(-0.5, 0.8, 0.2);
@@ -54,27 +54,27 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 
 	var light = new Light();
 	light.setPosition(lantern.x, lantern.y, lantern.z);
-	//program.addLight(light);
+	program.addLight(light);
 
 
 
-	var lantern2 = new Box(0.1, 0.1, 0.1);
+	var lantern2 = new Box(0.05, 0.05, 0.05);
 	lantern2.setColor(1, 1, 0);
 	lantern2.material.emission = [1, 1, 0.5, 1.0];
-	lantern2.setPosition(0, 2.5, 0.2);
+	lantern2.setPosition(0, 3.5, 0.2);
 	program.addObject(lantern2);
 
 	var light2 = new Light();
 	light2.attQ = 2;
 
 	light2.setPosition(lantern2.x, lantern2.y, lantern2.z);
-	//program.addLight(light2);
+	program.addLight(light2);
 
 
 	var spaceShipLight = new Light();
 	spaceShipLight.attL = 0.1;
 	spaceShipLight.setColor(0.1, 0.1, 0.1);
-	program.addLight(spaceShipLight);
+	//program.addLight(spaceShipLight);
 
 
 

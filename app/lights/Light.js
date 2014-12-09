@@ -10,9 +10,9 @@ define(['backbone'], function(Backbone) {
 		attL: 1,
 		attQ: 0,
 		initialize: function() {
-			this.ambient = [1, 0, 0, 1];
-			this.diffuse = [0, 1, 0, 1];
-			this.specular = [0, 0, 1, 1];
+			this.ambient = [0.5, 0.5, 0, 1];
+			this.diffuse = [0.5, 0.5, 0, 1];
+			this.specular = [0.5, 0.5, 0, 1];
 		},
 		addToArray: function(arr) {
 
