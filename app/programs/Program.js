@@ -43,7 +43,8 @@ define(['backbone'], function(Backbone) {
 				light.addToArray(lightArr);
 			});
 
-			var oneDTextureTexels = new Uint8Array(lightArr);
+
+			var oneDTextureTexels = new Float32Array(lightArr);
 
 			//gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 			gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_MIN_FILTER, gl.ctx.LINEAR);
@@ -52,7 +53,9 @@ define(['backbone'], function(Backbone) {
 
 			var width = oneDTextureTexels.length / 4;
 			var height = 1;
-			gl.ctx.texImage2D(gl.ctx.TEXTURE_2D, 0, gl.ctx.RGBA, width, height, 0, gl.ctx.RGBA, gl.ctx.UNSIGNED_BYTE, oneDTextureTexels);
+
+
+			gl.ctx.texImage2D(gl.ctx.TEXTURE_2D, 0, gl.ctx.RGBA, width, height, 0, gl.ctx.RGBA, gl.ctx.FLOAT, oneDTextureTexels);
 
 
 			gl.setScalarUniform('uLights', 0, 'i');
@@ -64,6 +67,8 @@ define(['backbone'], function(Backbone) {
 			var cam = this.cameras[this.selectedCamera];
 			mat4.multiply(pMatrix, this.mProjection, cam.getMatrix());
 			gl.setMatUniform('pMatrix', pMatrix);
+			gl.setVecUniform('uCameraPosition', cam.getPosition());
+			gl.setVecUniform('uGlobalAmbient', [0.1, 0.1, 0.1, 1.0]);
 
 			this.objects.forEach(function(object) {
 				object.draw();

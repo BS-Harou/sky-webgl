@@ -12,6 +12,15 @@ var GL = function(canvas) {
 
 	this._programs = [];
 	GL._extendWithVAO(this);
+	if (!this.ctx.getExtension('OES_texture_float')) {
+		alert('OES_texture_float not supported :/');
+	}
+
+	if (!this.ctx.getExtension('OES_texture_float_linear')) {
+		alert('OES_texture_float_linear not supported :/');
+	}
+
+
 };
 
 GL._getWebGLContext = function(canvas) {

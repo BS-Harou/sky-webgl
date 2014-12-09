@@ -7,20 +7,22 @@ define(['backbone'], function(Backbone) {
 		diffuse: null,
 		specular: null,
 		attC: 0,
-		attL: 2,
+		attL: 1,
 		attQ: 0,
 		initialize: function() {
-			this.ambient = [1, 1, 0.5, 1];
-			this.diffuse = [1, 1, 0.5, 1];
-			this.specular = [1, 1, 0.5, 1];
+			this.ambient = [1, 0, 0, 1];
+			this.diffuse = [0, 1, 0, 1];
+			this.specular = [0, 0, 1, 1];
 		},
 		addToArray: function(arr) {
 
+			var mult = 1;
+
 			var tmpArr = [
-				this.x, this.y, this.z, 255,    // POSITION
-				Math.round(this.ambient[0] * 255), Math.round(this.ambient[1]* 255), Math.round(this.ambient[2]* 255), Math.round(this.ambient[3]* 255),
-				Math.round(this.diffuse[0] * 255), Math.round(this.diffuse[1]* 255), Math.round(this.diffuse[2]* 255), Math.round(this.diffuse[3]* 255),
-				Math.round(this.specular[0] * 255), Math.round(this.specular[1]* 255), Math.round(this.specular[2]* 255), Math.round(this.specular[3]* 255),
+				this.x, this.y, this.z, 1,    // POSITION
+				this.ambient[0] * mult, this.ambient[1]* mult, this.ambient[2]* mult, this.ambient[3]* mult,
+				this.diffuse[0] * mult, this.diffuse[1]* mult, this.diffuse[2]* mult, this.diffuse[3]* mult,
+				this.specular[0] * mult, this.specular[1]* mult, this.specular[2]* mult, this.specular[3]* mult,
 				this.attC, this.attL, this.attQ, 0
 			];
 
@@ -33,6 +35,14 @@ define(['backbone'], function(Backbone) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
+		},
+		getPosition: function(x, y, z) {
+			return [this.x, this.y, this.z];
+		},
+		setColor: function(r, g, b) {
+			this.ambient = [r, g, b, 1];
+			this.diffuse = [r, g, b, 1];
+			this.specular = [r, g, b, 1];
 		}
 	});
 

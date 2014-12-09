@@ -16,21 +16,21 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 
 	var program = new ClassicProgram();
 
-	/*
+
 	var xOffset = 0;
 	var last = false;
 
 	var box;
-	for (var i=0; i<1; i++) {
+	for (var i=0; i<100; i++) {
 		if (i > 10 && !last && Math.round(Math.random() * 10) == 5) {
 			last = true;
 			continue;
 		}
 		last = false;
 		box = new Box(0.8, 0.05, 1.6);
-		box.y = box.y + 1.6 * i;
+
 		if (i > 3) xOffset += (Math.random() - 0.5) / 2;
-		box.x += xOffset;
+		box.setPosition(box.x + xOffset, box.y +  1.6 * i, -0.2);
 		program.addObject(box);
 	}
 
@@ -39,25 +39,42 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 	box.y += 1.6*4;
 	box.z += 0.2;
 	program.addObject(box);
-	*/
 
-	var box;
-	box = new Box(3.0, 0.05, 3.0);
-	box.x = -1.5;
-	program.addObject(box);
+
+
 
 
 
 	// LIGHTS
 	var lantern = new Box(0.1, 0.1, 0.1);
 	lantern.setColor(1, 1, 0);
-	lantern.material.emission = [0.5, 0.5, 0.5, 1.0];
-	lantern.setPosition(0.4, 0.8, 0.2);
+	lantern.material.emission = [1, 1, 0.5, 1.0];
+	lantern.setPosition(-0.5, 0.8, 0.2);
 	program.addObject(lantern);
 
 	var light = new Light();
-	light.setPosition(0.4, 0.8, 0.2);
-	program.addLight(light);
+	light.setPosition(lantern.x, lantern.y, lantern.z);
+	//program.addLight(light);
+
+
+
+	var lantern2 = new Box(0.1, 0.1, 0.1);
+	lantern2.setColor(1, 1, 0);
+	lantern2.material.emission = [1, 1, 0.5, 1.0];
+	lantern2.setPosition(0, 2.5, 0.2);
+	program.addObject(lantern2);
+
+	var light2 = new Light();
+	light2.attQ = 2;
+
+	light2.setPosition(lantern2.x, lantern2.y, lantern2.z);
+	//program.addLight(light2);
+
+
+	var spaceShipLight = new Light();
+	spaceShipLight.attL = 0.1;
+	spaceShipLight.setColor(0.1, 0.1, 0.1);
+	program.addLight(spaceShipLight);
 
 
 
@@ -83,7 +100,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 	var cameraRotateX = 0;
 	var cameraRotateY = 0;
 
-	var cameraX = 0.4;
+	var cameraX = 0;
 	var cameraY = -1.0;
 	var cameraZ = 0.35;
 
@@ -190,6 +207,14 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 
 
 	function redraw(fps) {
+
+		//light.y += 0.001;
+		//lantern.y  = light.y;
+		spaceShipLight.x = spaceship.x;
+		spaceShipLight.y = spaceship.y;
+		spaceShipLight.z = spaceship.z + 1;
+
+
 		document.querySelector('output').innerHTML = Math.round(1000 / fps);
 
 		var ms = fps / 1000;
@@ -254,35 +279,6 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 		} else {
 			spaceship.rotateY = 0;
 		}
-
-		/**
-		 * SPACESHIP
-		 */
-
-		 /*
-		gl.bindVertexArray(spaceship.vao);
-
-		mTransformAll = mat4.clone(pMatrix);
-		mTransform = mat4.create();
-
-		var scaleBy = 0.0008;
-		mat4.rotateX(mTransform, mTransform, GL.degToRad(-90));
-
-
-
-		//mat4.translate(mTransform, mTransform, [0.4, -0.2, 0.1 + yPosition]);
-		mat4.translate(mTransformAll, mTransformAll, [spaceship.x, 0.1 + yPosition, spaceship.z]);
-		mat4.scale(mTransform, mTransform, [scaleBy, scaleBy, scaleBy]);
-
-
-		mat4.multiply(mTransformAll, mTransformAll, mTransform);
-
-		gl.setMatUniform('pMatrix', mTransformAll);
-		gl.setVecUniform('uColor', [1, 0, 0, 1]);
-
-		gl.render('elements', spaceship.indices.length);
-
-		gl.bindVertexArray(null);*/
 
 	}
 

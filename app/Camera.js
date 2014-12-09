@@ -45,6 +45,9 @@ define(['backbone'], function(Backbone) {
 			this.y = y;
 			this.z = z;
 		},
+		getPosition: function() {
+			return [this.x, this.y, this.z];
+		},
 		setCenter: function(x, y, z) {
 			this.center.x = x;
 			this.center.y = y;
