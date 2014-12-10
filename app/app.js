@@ -80,6 +80,12 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, A
 	spaceShipLight.setColor(0.1, 0.1, 0.1);
 	program.addLight(spaceShipLight);
 
+	var globalDirectionalLight = new Light();
+	globalDirectionalLight.setColor(0.1, 0.1, 0.1);
+	globalDirectionalLight.type = Light.DIRECTIONAL;
+	globalDirectionalLight.setPosition(1, 0, 1); // direction
+	program.addLight(globalDirectionalLight);
+
 
 
 	// OTHER OBJECTS

@@ -9,6 +9,7 @@ define(['backbone'], function(Backbone) {
 		attC: 0,
 		attL: 1,
 		attQ: 0,
+		type: Light.POINT,
 		initialize: function() {
 			this.ambient = [0.5, 0.5, 0, 1];
 			this.diffuse = [0.5, 0.5, 0, 1];
@@ -23,7 +24,7 @@ define(['backbone'], function(Backbone) {
 				this.ambient[0] * mult, this.ambient[1]* mult, this.ambient[2]* mult, this.ambient[3]* mult,
 				this.diffuse[0] * mult, this.diffuse[1]* mult, this.diffuse[2]* mult, this.diffuse[3]* mult,
 				this.specular[0] * mult, this.specular[1]* mult, this.specular[2]* mult, this.specular[3]* mult,
-				this.attC, this.attL, this.attQ, 0
+				this.attC, this.attL, this.attQ, Light.POINT
 			];
 
 			tmpArr.forEach(function(item) {
@@ -45,6 +46,10 @@ define(['backbone'], function(Backbone) {
 			this.specular = [r, g, b, 1];
 		}
 	});
+
+	Light.DIRECTIONAL = 0;
+	Light.POINT = 1;
+	Light.REFLECTOR = 2;
 
 	return Light;
 
