@@ -49,7 +49,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 	var lantern = new Box(0.05, 0.05, 0.05);
 	lantern.setColor(1, 1, 0);
 	lantern.material.emission = [1, 1, 0.5, 1.0];
-	lantern.setPosition(-0.5, 0.8, 0.2);
+	lantern.setPosition(-0.8, 0.8, 0.2);
 	program.addObject(lantern);
 
 	var light = new Light();
@@ -74,7 +74,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 	var spaceShipLight = new Light();
 	spaceShipLight.attL = 0.1;
 	spaceShipLight.setColor(0.1, 0.1, 0.1);
-	//program.addLight(spaceShipLight);
+	program.addLight(spaceShipLight);
 
 
 
@@ -97,8 +97,6 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 
 
 	var yPosition = 0;
-	var cameraRotateX = 0;
-	var cameraRotateY = 0;
 
 	var cameraX = 0;
 	var cameraY = -1.0;
@@ -111,12 +109,21 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 	program.addCamera(camera);
 
 	window.camera = camera;
+	window.program = program;
 
-	var selectedCamera = 0;
-	var staticCameras = [
-		[[-1.0, 0.9, 0.4], [0.4, 1.0, 0.35], [0.0, 0.0, 1.0]],
-		[[2.0, -1.0, 0.4], [0.4, 1.0, 0.35], [0.0, 0.0, 1.0]],
-	];
+
+
+	var staticCamera1 = new Camera(-1.0, 0.9, 0.4);
+	staticCamera1.setCenter(0, 1.0, 0.35);
+	staticCamera1.computeUp();
+	program.addCamera(staticCamera1);
+
+	var staticCamera2 = new Camera(2.0, -1.0, 0.4);
+	staticCamera2.setCenter(0, 1.0, 0.35);
+	staticCamera2.computeUp();
+	program.addCamera(staticCamera2);
+
+
 
 
 	function handleKeys(ms) {
@@ -147,38 +154,42 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 			}
 		}
 
-		var centerX = Math.sin(GL.degToRad(cameraRotateX)) * 2;
-		var centerY = Math.cos(GL.degToRad(cameraRotateX)) * 2;
-		var centerZ = -Math.sin(GL.degToRad(cameraRotateY)) * 2;
+		var centerX = Math.sin(GL.degToRad(program.getCamera().rotateX)) * 2;
+		var centerY = Math.cos(GL.degToRad(program.getCamera().rotateX)) * 2;
+		var centerZ = -Math.sin(GL.degToRad(program.getCamera().rotateY)) * 2;
 
 
 		if (keys.isDown('I')) {
-			camera.y += centerY / 20;
-			camera.x += centerX / 20;
-			camera.z += centerZ / 20;
-			camera.computeUp();
+			program.getCamera().y += centerY / 20;
+			program.getCamera().x += centerX / 20;
+			program.getCamera().z += centerZ / 20;
+			program.getCamera().computeUp();
 		} else if (keys.isDown('K')) {
-			camera.y -= centerY / 20;
-			camera.x -= centerX / 20;
-			camera.y -= centerZ / 20;
-			camera.computeUp();
+			program.getCamera().y -= centerY / 20;
+			program.getCamera().x -= centerX / 20;
+			program.getCamera().z -= centerZ / 20;
+			program.getCamera().computeUp();
 		}
 
 		if (keys.isDown('J')) {
-			cameraRotateX -= 5;
+			program.getCamera().rotateX -= 5;
 		} else if (keys.isDown('L')) {
-			cameraRotateX += 5;
+			program.getCamera().rotateX += 5;
 		} else if (keys.isDown('U')) {
-			cameraRotateY += 2;
+			program.getCamera().rotateY += 2;
 		} else if (keys.isDown('O')) {
-			cameraRotateY -= 2;
-		} else if (keys.isDown('HOME')) {
-			cameraRotateX = 0;
-			cameraRotateY = 0;
-			cameraX = 0.4;
-			cameraY = -1.0;
-			cameraZ = 0.35;
+			program.getCamera().rotateY -= 2;
+		} else if (keys.isDown('M')) {
+			program.getCamera().rotateX = 0;
+			program.getCamera().rotateY = 0;
+			program.getCamera().x = spaceship.x;
+			program.getCamera().y = spaceship.y - 1.0;
+			program.getCamera().z = 0.35;
 		} else if (keys.isDown('H')) {
+
+			program.nextCamera();
+
+			/*
 
 			var newSelectedCamera = (selectedCamera + 1) % 3;
 
@@ -199,6 +210,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 				}
 			//}
 			selectedCamera = newSelectedCamera;
+			*/
 
 
 			keys.setKey('H', false);
@@ -221,11 +233,11 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 
 
 
-		if (!camera.transition.enabled) {
-			handleKeys(ms);
-		}
+		//if (!program.getCamera().transition.enabled) {
+		handleKeys(ms);
+		//}
 
-		if (!camera.transition.enabled) {
+		//if (!program.getCamera().transition.enabled) {
 
 			spaceship.speed *= 0.96;
 			yPosition += spaceship.speed;
@@ -236,24 +248,28 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 			// od 0.001 do 0.009
 
 
-			var centerX = Math.sin(GL.degToRad(cameraRotateX)) * 2;
-			var centerY = Math.cos(GL.degToRad(cameraRotateX)) * 2;
-			var centerZ = -Math.sin(GL.degToRad(cameraRotateY)) * 2;
+			var centerX = Math.sin(GL.degToRad(program.getCamera().rotateX)) * 2;
+			var centerY = Math.cos(GL.degToRad(program.getCamera().rotateX)) * 2;
+			var centerZ = -Math.sin(GL.degToRad(program.getCamera().rotateY)) * 2;
 
-			if (selectedCamera == 0) {
+			//if (selectedCamera == 0) {
 
 				//camera.setPosition(camera.x, camera.y + yPosition, cameraZ + 0.05);
-				camera.setCenter(camera.x + centerX, camera.y + centerY /* + yPosition*/, camera.z + centerZ);
-				camera.computeUp();
-			} else {
+				program.getCamera().setCenter(
+					program.getCamera().x + centerX,
+					program.getCamera().y + centerY,
+					program.getCamera().z + centerZ
+				);
+				program.getCamera().computeUp();
+			/*} else {
 				var camVectors = staticCameras[selectedCamera - 1];
 				camera.setPosition.apply(camera, camVectors[0]);
 				camera.setCenter.apply(camera, camVectors[1]);
 				camera.setUp.apply(camera, camVectors[2]);
-			}
+			}*/
 
 
-		}
+		//}
 		/*
 		 else {
 			var camVectors = camera.transition.getStep(camera.transition.step++);
@@ -293,8 +309,8 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 	document.addEventListener('mousemove', function(e) {
 		return;
 		if (!mouse.init) {
-			cameraRotateX += e.webkitMovementX / 5;
-			cameraRotateY += e.webkitMovementY / 5;
+			program.getCamera().rotateX += e.webkitMovementX / 5;
+			program.getCamera().rotateY += e.webkitMovementY / 5;
 		}
 
 		if (mouse.init) mouse.init = false;

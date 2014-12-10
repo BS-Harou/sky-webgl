@@ -2,6 +2,11 @@ precision mediump float;
 uniform vec4 uColor; // only for testing
 uniform vec4 uGlobalAmbient;
 
+uniform sampler2D uTexture;
+varying vec2 vTexCoords;
+uniform int uUseTextures;
+
+
 uniform sampler2D uLights;
 uniform int uNumberOfLights;
 const int LINES_PER_LIGHT = 5;
@@ -56,8 +61,12 @@ void main() {
 
 	}
 
+	if (uUseTextures == 1) {
+		gl_FragColor = texture2D(uTexture, vTexCoords); //finalColor;
+	} else {
+		gl_FragColor = finalColor;
+	}
 
-	gl_FragColor = finalColor;
 
 	/*
 	if (uColor.r != 1.0) {

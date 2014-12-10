@@ -8,7 +8,8 @@ require.config({
 		jquery: '../libs/jquery.min',
 		underscore: '../libs/underscore.min',
 		backbone: '../libs/backbone.min',
-		text: '../libs/text'
+		text: '../libs/text',
+		image: '../libs/image',
 	},
 
 	shim: {
