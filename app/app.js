@@ -1,7 +1,11 @@
 define([
-	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram', 'lights/Light'
+	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram', 'lights/Light',
+	'objects/Antenna', 'objects/Astronaut', 'objects/Agena', 'objects/Apollo', 'objects/Vehicle', 'objects/ISS',
+	'objects/Jupiter', 'objects/Mir'
 ],
-function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
+function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Antenna, Astronaut, Agena, Apollo, Vehicle,
+		ISS, Jupiter, Mir
+	) {
 
 
 	// SETUP START
@@ -49,7 +53,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 	var lantern = new Box(0.05, 0.05, 0.05);
 	lantern.setColor(1, 1, 0);
 	lantern.material.emission = [1, 1, 0.5, 1.0];
-	lantern.setPosition(-0.8, 0.8, 0.2);
+	lantern.setPosition(-1.5, 1.8, 1.2);
 	program.addObject(lantern);
 
 	var light = new Light();
@@ -78,11 +82,41 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 
 
 
+	// OTHER OBJECTS
+	var antenna = new Antenna();
+	antenna.setPosition(-2, 2, 1);
+	program.addObject(antenna);
+
+	var astronaut = new Astronaut();
+	astronaut.setPosition(2, 4, 1);
+	program.addObject(astronaut);
+
+	var agena = new Agena();
+	agena.setPosition(-2, 6, 1);
+	program.addObject(agena);
+
+	var apollo = new Apollo();
+	apollo.setPosition(2, 8, 1);
+	program.addObject(apollo);
+
+	var vehicle = new Vehicle();
+	vehicle.setPosition(-2, 10, 0);
+	program.addObject(vehicle);
+
+	var iss = new ISS();
+	iss.setPosition(5, 12, 1);
+	program.addObject(iss);
+
+	var jupiter = new Jupiter();
+	jupiter.setPosition(-2, 14, 1);
+	program.addObject(jupiter);
+
+	var mir = new Mir();
+	mir.setPosition(2, 16, 1);
+	program.addObject(mir);
 
 
-
-
-	var pMatrix = mat4.create();
+	// SHIP
 
 
 
@@ -95,6 +129,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 	}, 0);
 
 
+	// CAMERAS
 
 	var yPosition = 0;
 
@@ -245,28 +280,18 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light) {
 			camera.y += spaceship.speed;
 
 
-			// od 0.001 do 0.009
-
-
 			var centerX = Math.sin(GL.degToRad(program.getCamera().rotateX)) * 2;
 			var centerY = Math.cos(GL.degToRad(program.getCamera().rotateX)) * 2;
 			var centerZ = -Math.sin(GL.degToRad(program.getCamera().rotateY)) * 2;
 
-			//if (selectedCamera == 0) {
 
-				//camera.setPosition(camera.x, camera.y + yPosition, cameraZ + 0.05);
-				program.getCamera().setCenter(
-					program.getCamera().x + centerX,
-					program.getCamera().y + centerY,
-					program.getCamera().z + centerZ
-				);
-				program.getCamera().computeUp();
-			/*} else {
-				var camVectors = staticCameras[selectedCamera - 1];
-				camera.setPosition.apply(camera, camVectors[0]);
-				camera.setCenter.apply(camera, camVectors[1]);
-				camera.setUp.apply(camera, camVectors[2]);
-			}*/
+			program.getCamera().setCenter(
+				program.getCamera().x + centerX,
+				program.getCamera().y + centerY,
+				program.getCamera().z + centerZ
+			);
+			program.getCamera().computeUp();
+
 
 
 		//}

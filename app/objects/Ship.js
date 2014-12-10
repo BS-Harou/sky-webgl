@@ -42,7 +42,5 @@ define(['objects/SceneObject', 'text!models/feisar.obj', 'image!app/models/feisa
 
 	Ship.MODEL = new OBJ.Mesh(vehicleModel);
 
-	debugger;
-
 	return Ship;
 });
