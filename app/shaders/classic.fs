@@ -6,6 +6,9 @@ uniform sampler2D uTexture;
 varying vec2 vTexCoords;
 uniform int uUseTextures;
 
+uniform sampler2D uMapTexture;
+uniform int uUseSpecMap;
+
 
 uniform sampler2D uLights;
 uniform int uNumberOfLights;
@@ -57,10 +60,18 @@ void main() {
 
 		vec4 diffuseReflected = max(dot(L, N), 0.0) * lightDiffuse * uMaterialDiffuse;
 
+		if (uUseTextures == 1) {
+			diffuseReflected = diffuseReflected * texture2D(uTexture, vTexCoords);
+		}
+
 		vec4 specularReflected = vec4(0.0, 0.0, 0.0, 1.0);
 		if (dot(N, L) >= 0.0) {
     		specularReflected = pow(max(dot(reflect(-L, N), C) , 0.0), uMaterialShininess) * lightSpecular * uMaterialSpecular;
     	}
+
+    	if (uUseSpecMap == 1) {
+			specularReflected = specularReflected * texture2D(uMapTexture, vTexCoords);
+		}
 
 		float attenuationFactor;
 		if (type < 0.5) { // directional
@@ -69,22 +80,10 @@ void main() {
 			attenuationFactor = 1.0 / (attenuation.x + attenuation.y * d + attenuation.z * pow(d, 2.0));
 		}
 
-		finalColor += attenuationFactor * (ambientReflected + diffuseReflected  + specularReflected);
+		finalColor += attenuationFactor * (ambientReflected + diffuseReflected + specularReflected);
 
 	}
 
-	if (uUseTextures == 1) {
-		gl_FragColor = finalColor; //texture2D(uTexture, vTexCoords);
-	} else {
-		gl_FragColor = finalColor;
-	}
+	gl_FragColor = finalColor;
 
-
-	/*
-	if (uColor.r != 1.0) {
-		gl_FragColor = vec4(uColor.r, uColor.g + posZ * 30.0, uColor.b + posZ * 30.0, 1);
-	} else {
-		vec3 dirVec = vec3(0.3, 0.3, 0.3);
-		gl_FragColor = vec4(0.5, 0.5, 1, 1) + vec4(vec3(1, 1, 1) * max(dot(n, dirVec), 0.0), 1);
-	}*/
 }

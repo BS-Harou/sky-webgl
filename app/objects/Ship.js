@@ -1,4 +1,7 @@
-define(['objects/SceneObject', 'text!models/feisar.obj', 'image!app/models/feisar_diffuse.bmp'], function(SceneObject, vehicleModel, texImage) {
+define([
+	'objects/SceneObject', 'text!models/feisar.obj', 'image!app/models/feisar_diffuse.bmp', 'image!app/models/feisar_specular.bmp'
+],
+function(SceneObject, vehicleModel, texImage, specImage) {
 	var Ship = SceneObject.extend({
 		maxSpeed: 0.12,
 		xSpeed: 1,
@@ -23,8 +26,9 @@ define(['objects/SceneObject', 'text!models/feisar.obj', 'image!app/models/feisa
 			mat4.scale(this.transform, this.transform, [scaleBy, scaleBy, scaleBy]);
 			mat4.rotateX(this.transform, this.transform, GL.degToRad(-90));
 
-			this.material.ambient = this.material.specular = this.material.diffuse = [0.2, 0.2, 0.5, 1];
-			this.texture = this.setupTexture(texImage);
+			this.material.ambient = this.material.specular = this.material.diffuse = [0.3, 0.3, 0.3, 1];
+			this.texture = this.setupTexture(texImage, gl.ctx.TEXTURE1);
+			this.specMap = this.setupTexture(specImage, gl.ctx.TEXTURE2);
 
 			gl.bindVertexArray(this.vao);
 			gl.setAttributes('pos', this.vertices, this.vectorSize);

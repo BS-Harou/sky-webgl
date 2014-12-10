@@ -16,6 +16,7 @@ define(['backbone'], function(Backbone) {
 		color: null,
 		material: null,
 		texture: null,
+		specMap: null,
 		initialize: function() {
 			this.transform = mat4.create();
 			this.vertices = [];
@@ -71,16 +72,24 @@ define(['backbone'], function(Backbone) {
 				gl.ctx.bindTexture(gl.ctx.TEXTURE_2D, this.texture);
 				gl.setScalarUniform('uTexture', 1, 'i');
 			}
+
+			if (this.specMap) {
+				gl.ctx.activeTexture(gl.ctx.TEXTURE2);
+				gl.ctx.bindTexture(gl.ctx.TEXTURE_2D, this.specMap);
+				gl.setScalarUniform('uMapTexture', 2, 'i');
+			}
+
 			gl.setScalarUniform('uUseTextures', !!this.texture, 'i');
+			gl.setScalarUniform('uUseSpecMap', !!this.specMap, 'i');
 
 			this.drawInternal();
 			gl.bindVertexArray(null);
 		},
-		setupTexture: function(img) {
+		setupTexture: function(img, texture_num) {
 			var tex = gl.ctx.createTexture();
-			gl.ctx.activeTexture(gl.ctx.TEXTURE1);
+			gl.ctx.activeTexture(texture_num);
 			gl.ctx.bindTexture(gl.ctx.TEXTURE_2D, tex);
-			//gl.ctx.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+			gl.ctx.pixelStorei(gl.ctx.UNPACK_FLIP_Y_WEBGL, true);
 			gl.ctx.texImage2D(gl.ctx.TEXTURE_2D, 0, gl.ctx.RGBA, gl.ctx.RGBA, gl.ctx.UNSIGNED_BYTE, img);
 
 			gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_MAG_FILTER, gl.ctx.LINEAR);
