@@ -1,6 +1,6 @@
 define([
 	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram', 'lights/Light',
-	'objects/Antenna', 'objects/Astronaut', 'objects/Agena', 'objects/Apollo', 'objects/Vehicle', 'objects/ISS',
+	'objects/Antenna', 'objects/Astronaut', 'objects/Agena', 'objects/Apollo', 'objects/Vehicle', /*'objects/ISS'*/,
 	'objects/Jupiter', 'objects/Mir'
 ],
 function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Antenna, Astronaut, Agena, Apollo, Vehicle,
@@ -81,9 +81,11 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, A
 	program.addLight(spaceShipLight);
 
 	var globalDirectionalLight = new Light();
-	globalDirectionalLight.setColor(0.1, 0.1, 0.1);
+	globalDirectionalLight.setColor(0.5, 0.5, 0.5);
+	globalDirectionalLight.ambient = [0,0,0,1];
+	globalDirectionalLight.specular = [0,0,0,1];
 	globalDirectionalLight.type = Light.DIRECTIONAL;
-	globalDirectionalLight.setPosition(1, 0, 1); // direction
+	globalDirectionalLight.setPosition(-1, -0.2, 0.5); // direction
 	program.addLight(globalDirectionalLight);
 
 
@@ -109,9 +111,9 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, A
 	vehicle.setPosition(-2, 10, 0);
 	program.addObject(vehicle);
 
-	var iss = new ISS();
+	/*var iss = new ISS();
 	iss.setPosition(5, 12, 1);
-	program.addObject(iss);
+	program.addObject(iss);*/
 
 	var jupiter = new Jupiter();
 	jupiter.setPosition(-2, 14, 1);

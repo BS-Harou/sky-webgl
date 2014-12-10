@@ -40,8 +40,15 @@ void main() {
 		vec4 lightDiffuse = texture2D(uLights,  vec2((float(i * LINES_PER_LIGHT) + 2.5) / p, 0.5));
 		vec4 lightSpecular = texture2D(uLights, vec2((float(i * LINES_PER_LIGHT) + 3.5) / p, 0.5));
 		vec3 attenuation = texture2D(uLights,   vec2((float(i * LINES_PER_LIGHT) + 4.5) / p, 0.5)).xyz;
+		float type = texture2D(uLights,   vec2((float(i * LINES_PER_LIGHT) + 4.5) / p, 0.5)).w;
 
-		vec3 L = normalize(lightPosition - vPos);
+		vec3 L;
+		if (type < 0.5) { // directional
+			L = normalize(lightPosition);
+		} else { // point
+			L = normalize(lightPosition - vPos);
+		}
+
 		vec3 C = normalize(uCameraPosition - vPos);
 		vec3 N = normalize(vNormal);
 		float d = distance(lightPosition, vPos);
@@ -55,14 +62,19 @@ void main() {
     		specularReflected = pow(max(dot(reflect(-L, N), C) , 0.0), uMaterialShininess) * lightSpecular * uMaterialSpecular;
     	}
 
-		float attenuationFactor = 1.0 / (attenuation.x + attenuation.y * d + attenuation.z * pow(d, 2.0));
+		float attenuationFactor;
+		if (type < 0.5) { // directional
+			attenuationFactor = 1.0;
+		} else { // point
+			attenuationFactor = 1.0 / (attenuation.x + attenuation.y * d + attenuation.z * pow(d, 2.0));
+		}
 
 		finalColor += attenuationFactor * (ambientReflected + diffuseReflected  + specularReflected);
 
 	}
 
 	if (uUseTextures == 1) {
-		gl_FragColor = texture2D(uTexture, vTexCoords); //finalColor;
+		gl_FragColor = finalColor; //texture2D(uTexture, vTexCoords);
 	} else {
 		gl_FragColor = finalColor;
 	}

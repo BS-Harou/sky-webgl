@@ -81,7 +81,7 @@ define(['objects/SceneObject'], function(SceneObject) {
 
 			gl.setIndices(this.indices);
 
-			this.color = [Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2, 1];
+			this.color = [Math.random() * 0.6 + 0.2, Math.random() * 0.6 + 0.2, Math.random() * 0.6 + 0.2, 1];
 			this.material.ambient = this.material.specular = this.material.diffuse = this.color;
 
 			gl.bindVertexArray(null);

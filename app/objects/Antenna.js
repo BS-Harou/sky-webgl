@@ -11,7 +11,7 @@ define(['objects/SceneObject', 'text!models/antenna.obj', 'image!app/models/ante
 			this.material.ambient = [0.3,0.1,0.1,1];
 			this.material.diffuse = [0.8,0.2,0.2,1];
 			this.material.specular = [0.5, 0.2, 0.2,1];
-			this.material.emission = [0.1, 0.1, 0.1, 1];
+			//this.material.emission = [0.1, 0.1, 0.1, 1];
 			this.material.shininess = 1;
 
 			//this.material.emission = [0.5, 0.5, 0.5, 1.0];

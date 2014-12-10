@@ -78,7 +78,7 @@ define(['backbone'], function(Backbone) {
 			mat4.multiply(pMatrix, this.mProjection, cam.getMatrix());
 			gl.setMatUniform('pMatrix', pMatrix);
 			gl.setVecUniform('uCameraPosition', cam.getPosition());
-			gl.setVecUniform('uGlobalAmbient', [0.1, 0.1, 0.1, 1.0]);
+			gl.setVecUniform('uGlobalAmbient', [0.0, 0.0, 0.0, 1.0]);
 
 			this.objects.forEach(function(object) {
 				object.draw();

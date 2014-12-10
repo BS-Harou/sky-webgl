@@ -11,7 +11,7 @@ define(['objects/SceneObject', 'text!models/astronaut.obj'], function(SceneObjec
 			this.material.ambient = [0.2, 0.2, 0.2, 1];
 			this.material.diffuse = [0.467451, 0.467451, 0.467451, 1];
 			this.material.specular = [0.449020, 0.449020, 0.449020, 1];
-			this.material.emission = [0.1, 0.1, 0.1, 1];
+			//this.material.emission = [0.1, 0.1, 0.1, 1];
 			this.material.shininess = 1;
 
 			//this.material.emission = [0.5, 0.5, 0.5, 1.0];
