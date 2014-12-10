@@ -1,3 +1,6 @@
+/**
+ * @overview Top class for models in scene
+ */
 define(['backbone'], function(Backbone) {
 	var SceneObject = Backbone.Model.extend({
 		vao: null,
@@ -17,6 +20,9 @@ define(['backbone'], function(Backbone) {
 		material: null,
 		texture: null,
 		specMap: null,
+		/**
+		 * @constructor
+		 */
 		initialize: function() {
 			this.transform = mat4.create();
 			this.vertices = [];
@@ -41,6 +47,9 @@ define(['backbone'], function(Backbone) {
 			this.y = y;
 			this.z = z;
 		},
+		/**
+		 * Called in animation frame to draw the object
+		 */
 		draw: function() {
 			gl.bindVertexArray(this.vao);
 

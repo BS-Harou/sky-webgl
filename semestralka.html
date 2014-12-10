@@ -27,47 +27,6 @@
 
 	<button id="reload">Reload config</button>
 
-	<pre>
-	Ovladani:
-		- pohyb lodi: sipky a space
-		- pohyb kamery: I J K L a U O
-		- zmena kamery: H (prvni je dynamicka, dalsi dve jsou staticke)
-		- posun kamery za lod: M
-	</pre>
-
-<script type="shader/vertex" id="vs">
-	precision mediump float;
-	attribute vec3 pos;
-	attribute vec3 normal;
-
-	uniform mat4 pMatrix;
-	varying float posZ;
-	varying vec3 n;
-
-
-	void main() {
-		n = normal;
-		posZ = pos.z;
-		gl_Position = pMatrix * vec4(pos, 1);
-	}
-</script>
-
-<script type="shader/fragment" id="fs">
-	precision mediump float;
-	uniform vec4 uColor;
-
-	varying float posZ;
-	varying vec3 n;
-
-	void main() {
-		if (uColor.r != 1.0) {
-			gl_FragColor = vec4(uColor.r, uColor.g + posZ * 30.0, uColor.b + posZ * 30.0, 1);
-		} else {
-			vec3 dirVec = vec3(0.3, 0.3, 0.3);
-			gl_FragColor = vec4(0.5, 0.5, 1, 1) + vec4(vec3(1, 1, 1) * max(dot(n, dirVec), 0.0), 1);
-		}
-	}
-</script>
 
 
 </body>

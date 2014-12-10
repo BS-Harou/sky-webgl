@@ -1,3 +1,6 @@
+/**
+ * @overview Top class for programs. Hold lists of objects, lights and cameras.
+ */
 define(['backbone'], function(Backbone) {
 	var Program = Backbone.Model.extend({
 		pgr: null,
@@ -6,6 +9,9 @@ define(['backbone'], function(Backbone) {
 		lights: null,
 		selectedCamera: -1,
 		mProjection: null,
+		/**
+		 * @constructor
+		 */
 		initialize: function() {
 			this.objects = [];
 			this.cameras = [];

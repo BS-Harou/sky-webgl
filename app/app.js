@@ -11,7 +11,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	var keys = new KeyHandler();
 	keys.startListening();
 
-	//var pointerLock = new PointerLock(c);
+	var pointerLock = new PointerLock(c);
 
 	// SETUP END
 
@@ -36,10 +36,10 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	}
 
 
-	box = new Box(0.4, 0.2, 1.6);
+	/*box = new Box(0.4, 0.2, 1.6);
 	box.y += 1.6*4;
 	box.z += 0.2;
-	program.addObject(box);
+	program.addObject(box);*/
 
 
 
@@ -316,7 +316,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	document.addEventListener('mousemove', function(e) {
-		return;
+		if (!document.webkitIsFullScreen) return;
 		if (!mouse.init) {
 			program.getCamera().rotateX += e.webkitMovementX / 5;
 			program.getCamera().rotateY += e.webkitMovementY / 5;

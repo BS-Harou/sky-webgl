@@ -1,6 +1,13 @@
+/**
+ * @overview Handles pointer lock (infinite mouse moving in any direction)
+ */
 define(['backbone'], function(Backbone) {
 	var PointerLock = Backbone.Model.extend({
 		el: null,
+		/**
+		 * @constructor
+		 * @param {HTMLElement} el
+		 */
 		initialize: function(el) {
 			this.el = el;
 

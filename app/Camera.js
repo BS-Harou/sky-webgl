@@ -1,5 +1,6 @@
 define(['backbone'], function(Backbone) {
 
+	/*
 	var camTransition = {
 		enabled: false,
 		step: 0,
@@ -24,7 +25,7 @@ define(['backbone'], function(Backbone) {
 				[from[2][0] - (from[2][0] - to[2][0]) * n / x, from[2][1] - (from[2][1] - to[2][1]) * n / x, from[2][2] - (from[2][2] - to[2][2]) * n / x],
 			];
 		}
-	};
+	};*/
 
 	var Camera = Backbone.Model.extend({
 		x: 0,
@@ -34,30 +35,57 @@ define(['backbone'], function(Backbone) {
 		up: null,
 		rotateX: 0,
 		rotateY: 0,
-		transition: camTransition,
+		transition: {},
+		/**
+		 * @constructor
+		 * @param {number} x
+		 * @param {number} y
+		 * @param {number} z
+		 */
 		initialize: function(x, y, z) {
 			this.center = { x: 0, y: 0, z: 0};
 			this.up = { x: 0, y: 0, z: 0};
 			this.setPosition(x, y, z);
 		},
+		/**
+		 * @param {number} x
+		 * @param {number} y
+		 * @param {number} z
+		 */
 		setPosition: function(x, y, z) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
 		},
+		/**
+		 * @return {Array.<number>}
+		 */
 		getPosition: function() {
 			return [this.x, this.y, this.z];
 		},
+		/**
+		 * @param {number} x
+		 * @param {number} y
+		 * @param {number} z
+		 */
 		setCenter: function(x, y, z) {
 			this.center.x = x;
 			this.center.y = y;
 			this.center.z = z;
 		},
+		/**
+		 * @param {number} x
+		 * @param {number} y
+		 * @param {number} z
+		 */
 		setUp: function(x, y, z) {
 			this.up.x = x;
 			this.up.y = y;
 			this.up.z = z;
 		},
+		/**
+		 * Computes UP vector so that it would be pependicular to view vector
+		 */
 		computeUp: function() {
 			var lookVector = [this.center.x - this.x, this.center.y - this.y, this.center.z - this.z];
 
@@ -72,6 +100,9 @@ define(['backbone'], function(Backbone) {
 
 			this.setUp(upVector[0], upVector[1], upVector[2]);
 		},
+		/**
+		 * @return {Array.<Number>}
+		 */
 		getMatrix: function() {
 			var arr = [
 				[this.x, this.y, this.z],
