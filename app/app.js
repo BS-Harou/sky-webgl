@@ -1,11 +1,8 @@
 define([
 	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram', 'lights/Light',
-	'objects/Antenna', 'objects/Astronaut', 'objects/Agena', 'objects/Apollo', 'objects/Vehicle', /*'objects/ISS'*/,
-	'objects/Jupiter', 'objects/Mir'
+	'Config'
 ],
-function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Antenna, Astronaut, Agena, Apollo, Vehicle,
-		ISS, Jupiter, Mir
-	) {
+function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Config) {
 
 
 	// SETUP START
@@ -91,37 +88,13 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, A
 
 
 	// OTHER OBJECTS
-	var antenna = new Antenna();
+	/*var antenna = new Antenna();
 	antenna.setPosition(-2, 2, 1);
 	program.addObject(antenna);
+	*/
 
-	var astronaut = new Astronaut();
-	astronaut.setPosition(2, 4, 1);
-	program.addObject(astronaut);
-
-	var agena = new Agena();
-	agena.setPosition(-2, 6, 1);
-	program.addObject(agena);
-
-	var apollo = new Apollo();
-	apollo.setPosition(2, 8, 1);
-	program.addObject(apollo);
-
-	var vehicle = new Vehicle();
-	vehicle.setPosition(-2, 10, 0);
-	program.addObject(vehicle);
-
-	/*var iss = new ISS();
-	iss.setPosition(5, 12, 1);
-	program.addObject(iss);*/
-
-	var jupiter = new Jupiter();
-	jupiter.setPosition(-2, 14, 1);
-	program.addObject(jupiter);
-
-	var mir = new Mir();
-	mir.setPosition(2, 16, 1);
-	program.addObject(mir);
+	var config = new Config(program);
+	config.loadModels();
 
 
 	// SHIP

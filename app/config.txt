@@ -1,0 +1,7 @@
+Antenna, -2, 2, 1
+Astronaut, 2, 4, 1
+Agena, -2, 6, 1
+Apollo, 2, 8, 1
+Vehicle, -2, 10, 0
+Jupiter, -2, 14, 1
+Mir, 2, 16, 1
