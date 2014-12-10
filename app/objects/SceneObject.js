@@ -53,6 +53,10 @@ define(['backbone'], function(Backbone) {
 
 			mat4.multiply(mPosition, mPosition, this.transform);
 
+			if (this.isFirstLantern) {
+				mat4.translate(mPosition, mPosition, [0.2, 0, 0]);
+			}
+
 			gl.setVecUniform('uColor', this.color);
 			gl.setMatUniform('uTransform', mPosition);
 

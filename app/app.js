@@ -61,6 +61,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 	var lantern2 = new Box(0.05, 0.05, 0.05);
 	lantern2.setColor(1, 1, 0);
+	lantern2.isFirstLantern = true;
 	lantern2.material.emission = [1, 1, 0.5, 1.0];
 	lantern2.setPosition(0, 3.5, 0.2);
 	program.addObject(lantern2);
@@ -235,6 +236,8 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	function redraw(fps) {
+
+		lantern2.rotateZ += 1;
 
 		//light.y += 0.001;
 		//lantern.y  = light.y;
