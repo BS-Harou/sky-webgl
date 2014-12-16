@@ -61,7 +61,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 			box = new Box(0.8, 0.05, 1.6);
 		}
 
-		if (i > 3) xOffset += (Math.random() - 0.5) / 2;
+		if (i > 3) xOffset += (Math.random() - 0.5) * 1.5;
 		box.setPosition(box.x + xOffset, box.y +  1.6 * i, -0.2);
 		program.addObject(box);
 		allBoxes.push(box);
@@ -157,10 +157,10 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 	var cameraX = 0;
 	var cameraY = -1.0;
-	var cameraZ = 0.35;
+	var cameraZ = 0.25;
 
 	var camera = new Camera(cameraX, cameraY, cameraZ);
-	camera.setCenter(0.4, 1.0, 0.35);
+	camera.setCenter(0.4, 1.0, 0.25);
 	camera.computeUp();
 
 	program.addCamera(camera);
@@ -172,12 +172,12 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	var staticCamera1 = new Camera(-1.0, 0.9, 0.4);
-	staticCamera1.setCenter(0, 1.0, 0.35);
+	staticCamera1.setCenter(0, 1.0, 0.25);
 	staticCamera1.computeUp();
 	program.addCamera(staticCamera1);
 
 	var staticCamera2 = new Camera(2.0, -1.0, 0.4);
-	staticCamera2.setCenter(0, 1.0, 0.35);
+	staticCamera2.setCenter(0, 1.0, 0.25);
 	staticCamera2.computeUp();
 	program.addCamera(staticCamera2);
 
@@ -229,7 +229,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 			spaceship.speed -= 0.3 * ms;
 		}
 
-		if (keys.isDown('SPACE') && spaceship.jumping == false) {
+		if (keys.isDown('SPACE') && spaceship.jumping == false && spaceship.z == spaceship.defaultZ) {
 			spaceship.jumpSpeed = 0.08;
 			spaceship.jumping = true;
 		}
@@ -265,7 +265,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 			program.getCamera().rotateY = 0;
 			program.getCamera().x = spaceship.x;
 			program.getCamera().y = spaceship.y - 1.2;
-			program.getCamera().z = 0.35;
+			program.getCamera().z = 0.25;
 		} else if (keys.isDown('H')) {
 
 			program.nextCamera();
@@ -276,10 +276,24 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		}
 	}
 
+	function resetGame() {
+		spaceship.setPosition(0, yPosition = 0.2, spaceship.defaultZ);
+
+		program.getCamera().rotateX = 0;
+		program.getCamera().rotateY = 0;
+		program.getCamera().x = spaceship.x;
+		program.getCamera().y = spaceship.y - 1.2;
+		program.getCamera().z = 0.25;
+	}
+
 
 	function redraw(fps) {
 
 		lantern2.rotateZ += 1;
+
+		if (spaceship.z < -0.5) {
+			resetGame();
+		}
 
 		//light.y += 0.001;
 		//lantern.y  = light.y;
@@ -299,6 +313,8 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 		handleKeys(ms);
 
+
+
 		if (spaceship.jumping) {
 			spaceship.z += spaceship.jumpSpeed;
 			spaceship.jumpSpeed -= 0.3 * ms;
@@ -307,8 +323,8 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 				spaceship.jumping = false;
 			}
 		} else if (!hittest(spaceship)) {
-			spaceship.z -= 0.01;
-		} else if (spaceship.z < spaceship.defaultZ - 0.02) {
+			spaceship.z -= 0.02;
+		} else if (spaceship.z < spaceship.defaultZ) {
 			spaceship.z += 0.02;
 		} else if (spaceship.z > spaceship.defaultZ) {
 			spaceship.z = spaceship.defaultZ;
