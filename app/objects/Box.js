@@ -5,9 +5,15 @@ define(['objects/SceneObject'], function(SceneObject) {
 		vertices: null,
 		vertexNormals: [],
 		indices: null,
+		width: 0,
+		height: 0,
+		length: 0,
 		initialize: function(width, height, length) {
 			SceneObject.prototype.initialize.call(this);
 
+			this.width = width;
+			this.height = height;
+			this.length = length;
 
 			this.vertices = [
 				// predni

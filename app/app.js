@@ -34,10 +34,17 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 	var program = new ClassicProgram();
 
-
+	/**
+	 * Offset by which is box moved when generated
+	 */
 	var xOffset = 0;
+
+	/**
+	 * Set to true if last box was skipped
+	 */
 	var last = false;
 
+	var allBoxes = [];
 	var box;
 	for (var i=0; i<100; i++) {
 		if (i > 10 && !last && Math.round(Math.random() * 10) == 5) {
@@ -57,8 +64,21 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		if (i > 3) xOffset += (Math.random() - 0.5) / 2;
 		box.setPosition(box.x + xOffset, box.y +  1.6 * i, -0.2);
 		program.addObject(box);
+		allBoxes.push(box);
 	}
 
+	function hittest(object) {
+		for (var i=0; i < allBoxes.length; i++) {
+			if (
+				object.x > allBoxes[i].x - allBoxes[i].width / 2 && object.x < allBoxes[i].x + allBoxes[i].width / 2 &&
+				object.y > allBoxes[i].y - allBoxes[i].length / 2 && object.y < allBoxes[i].y + allBoxes[i].length / 2 &&
+				object.z > allBoxes[i].z + allBoxes[i].height / 2
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 
@@ -122,6 +142,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	var spaceship = new Ship();
+	spaceship.defaultZ = spaceship.z;
 	program.addObject(spaceship);
 
 	setTimeout(function() {
@@ -132,7 +153,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 	// CAMERAS
 
-	var yPosition = 0;
+	var yPosition = 0.2;
 
 	var cameraX = 0;
 	var cameraY = -1.0;
@@ -212,14 +233,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 			spaceship.jumpSpeed = 0.08;
 			spaceship.jumping = true;
 		}
-		if (spaceship.jumping) {
-			spaceship.z += spaceship.jumpSpeed;
-			spaceship.jumpSpeed -= 0.3 * ms;
-			if (spaceship.z < 0.15) {
-				spaceship.z = 0.15;
-				spaceship.jumping = false;
-			}
-		}
+
 
 		var centerX = Math.sin(GL.degToRad(program.getCamera().rotateX)) * 2;
 		var centerY = Math.cos(GL.degToRad(program.getCamera().rotateX)) * 2;
@@ -250,7 +264,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 			program.getCamera().rotateX = 0;
 			program.getCamera().rotateY = 0;
 			program.getCamera().x = spaceship.x;
-			program.getCamera().y = spaceship.y - 1.0;
+			program.getCamera().y = spaceship.y - 1.2;
 			program.getCamera().z = 0.35;
 		} else if (keys.isDown('H')) {
 
@@ -282,9 +296,23 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 
-		//if (!program.getCamera().transition.enabled) {
+
 		handleKeys(ms);
-		//}
+
+		if (spaceship.jumping) {
+			spaceship.z += spaceship.jumpSpeed;
+			spaceship.jumpSpeed -= 0.3 * ms;
+			if (spaceship.z < spaceship.defaultZ) {
+				spaceship.z = spaceship.defaultZ;
+				spaceship.jumping = false;
+			}
+		} else if (!hittest(spaceship)) {
+			spaceship.z -= 0.01;
+		} else if (spaceship.z < spaceship.defaultZ - 0.02) {
+			spaceship.z += 0.02;
+		} else if (spaceship.z > spaceship.defaultZ) {
+			spaceship.z = spaceship.defaultZ;
+		}
 
 
 		spaceship.speed *= 0.96;

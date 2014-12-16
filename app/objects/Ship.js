@@ -8,7 +8,7 @@ function(SceneObject, vehicleModel, texImage, specImage) {
 		jumping: false,
 		jumpSpeed: 0,
 		x: 0,
-		z: 0.15,
+		z: 0.07,
 		vertices: null,
 		vertexNormals: null,
 		indices: null,
