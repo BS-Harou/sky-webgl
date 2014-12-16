@@ -1,9 +1,10 @@
 define([
 	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram', 'lights/Light',
-	'Config', 'programs/SkyboxProgram', 'objects/SkyboxCube', 'objects/ArrowBox', 'objects/ExplosionBox'
+	'Config', 'programs/SkyboxProgram', 'objects/SkyboxCube', 'objects/ArrowBox', 'objects/ExplosionBox',
+	'programs/PickingProgram'
 ],
 function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Config, SkyboxProgram,
-	SkyboxCube, ArrowBox, ExplosionBox) {
+	SkyboxCube, ArrowBox, ExplosionBox, PickingProgram) {
 
 
 	// SETUP START
@@ -157,7 +158,38 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	program.addCamera(staticCamera2);
 
 
+	/**
+	 * Picking
+	 */
+	var pickingProgram = new PickingProgram(program);
+	var pickingFrameBuffer = gl.ctx.createFramebuffer();
+	var pickingRenderBuffer = gl.ctx.createRenderbuffer();
+	var pickingMap = new Uint8Array(4);
 
+	var pickingTexture = gl.ctx.createTexture();
+	gl.ctx.activeTexture(gl.ctx.TEXTURE3);
+    gl.ctx.bindTexture(gl.ctx.TEXTURE_2D, pickingTexture);
+    gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_MAG_FILTER, gl.ctx.NEAREST);
+    gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_MIN_FILTER, gl.ctx.NEAREST);
+    gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_WRAP_S, gl.ctx.CLAMP_TO_EDGE);
+	gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_WRAP_T, gl.ctx.CLAMP_TO_EDGE);
+
+    gl.ctx.texImage2D(gl.ctx.TEXTURE_2D, 0, gl.ctx.RGBA, 1024, 1024, 0, gl.ctx.RGBA, gl.ctx.UNSIGNED_BYTE, null);
+
+	gl.ctx.bindFramebuffer(gl.ctx.FRAMEBUFFER, pickingFrameBuffer);
+	gl.ctx.viewport(0, 0, gl.el.width, gl.el.height);
+	gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, pickingRenderBuffer);
+
+    //gl.ctx.framebufferRenderbuffer(gl.ctx.FRAMEBUFFER, gl.ctx.COLOR_ATTACHMENT0, gl.ctx.RENDERBUFFER, pickingRenderBuffer);
+    //gl.ctx.renderbufferStorage(gl.ctx.RENDERBUFFER, gl.ctx.RGBA4, 16, 16);
+    gl.ctx.framebufferTexture2D(gl.ctx.FRAMEBUFFER, gl.ctx.COLOR_ATTACHMENT0, gl.ctx.TEXTURE_2D, pickingTexture, 0);
+
+    gl.ctx.framebufferRenderbuffer(gl.ctx.FRAMEBUFFER, gl.ctx.DEPTH_ATTACHMENT, gl.ctx.RENDERBUFFER, pickingRenderBuffer);
+    gl.ctx.renderbufferStorage(gl.ctx.RENDERBUFFER, gl.ctx.DEPTH_COMPONENT16, 1024, 1024);
+
+    gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, null);
+    gl.ctx.bindFramebuffer(gl.ctx.FRAMEBUFFER, null);
+    gl.ctx.viewport(0, 0, gl.el.width, gl.el.height);
 
 	function handleKeys(ms) {
 		if (keys.isDown('LEFT')) {
@@ -252,34 +284,50 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		handleKeys(ms);
 		//}
 
-		//if (!program.getCamera().transition.enabled) {
 
-			spaceship.speed *= 0.96;
-			yPosition += spaceship.speed;
-			spaceship.y = yPosition;
-			camera.y += spaceship.speed;
-
-
-			var centerX = Math.sin(GL.degToRad(program.getCamera().rotateX)) * 2;
-			var centerY = Math.cos(GL.degToRad(program.getCamera().rotateX)) * 2;
-			var centerZ = -Math.sin(GL.degToRad(program.getCamera().rotateY)) * 2;
+		spaceship.speed *= 0.96;
+		yPosition += spaceship.speed;
+		spaceship.y = yPosition;
+		camera.y += spaceship.speed;
 
 
-			program.getCamera().setCenter(
-				program.getCamera().x + centerX,
-				program.getCamera().y + centerY,
-				program.getCamera().z + centerZ
-			);
-			program.getCamera().computeUp();
+		var centerX = Math.sin(GL.degToRad(program.getCamera().rotateX)) * 2;
+		var centerY = Math.cos(GL.degToRad(program.getCamera().rotateX)) * 2;
+		var centerZ = -Math.sin(GL.degToRad(program.getCamera().rotateY)) * 2;
 
 
+		program.getCamera().setCenter(
+			program.getCamera().x + centerX,
+			program.getCamera().y + centerY,
+			program.getCamera().z + centerZ
+		);
+		program.getCamera().computeUp();
 
-		//}
 
 
 		gl.clear();
+
 		skyboxProgram.draw();
 		program.draw();
+
+
+
+		if (mouse.picking) {
+			gl.ctx.bindFramebuffer(gl.ctx.FRAMEBUFFER, pickingFrameBuffer);
+			gl.ctx.viewport(0, 0, gl.el.width, gl.el.height);
+			gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, pickingRenderBuffer);
+
+			gl.clear();
+			pickingProgram.draw();
+
+			gl.ctx.readPixels(mouse.clickX, gl.el.height - mouse.clickY, 1, 1, gl.ctx.RGBA, gl.ctx.UNSIGNED_BYTE, pickingMap);
+			console.log(pickingMap);
+
+			gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, null);
+			gl.ctx.bindFramebuffer(gl.ctx.FRAMEBUFFER, null);
+			gl.ctx.viewport(0, 0, gl.el.width, gl.el.height);
+			mouse.picking = false;
+		}
 
 
 		if (keys.isDown('LEFT')) {
@@ -299,9 +347,17 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	var mouse = {
-		init: true
+		init: true,
+		clickX: 0,
+		clickY: 0,
+		picking: false
 	};
 
+	document.addEventListener('click', function(e) {
+		mouse.picking = true;
+		mouse.clickX = e.offsetX;
+		mouse.clickY = e.offsetY;
+	});
 
 
 	document.addEventListener('mousemove', function(e) {

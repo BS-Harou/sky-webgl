@@ -28,7 +28,7 @@ GL._getWebGLContext = function(canvas) {
 	var gl = null;
 	for (var i = 0; i < tryNames.length && gl == null; i++) {
 		try {
-			gl = canvas.getContext(tryNames[i]);
+			gl = canvas.getContext(tryNames[i], { preserveDrawingBuffer: true });
 		} catch (e) {}
 	}
 	if (gl == null) {

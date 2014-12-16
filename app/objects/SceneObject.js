@@ -2,6 +2,28 @@
  * @overview Top class for models in scene
  */
 define(['backbone'], function(Backbone) {
+
+	var pickingColorR = 0;
+	var pickingColorG = 0;
+	var pickingColorB = 0;
+
+	function getPickingColor() {
+		pickingColorB += 5;
+		if (pickingColorB >= 255) {
+			pickingColorB = 0;
+			pickingColorG += 5;
+		}
+		if (pickingColorG >= 255) {
+			pickingColorG = 0;
+			pickingColorR += 5;
+		}
+		if (pickingColorR >= 255) {
+			throw 'Out of picking colors';
+		}
+
+		return [pickingColorR / 255, pickingColorG / 255, pickingColorB / 255, 1];
+	}
+
 	var SceneObject = Backbone.Model.extend({
 		vao: null,
 		x: 0.4,
@@ -21,6 +43,7 @@ define(['backbone'], function(Backbone) {
 		texture: null,
 		textureTransform: null,
 		specMap: null,
+		pickingColor: null,
 		/**
 		 * @constructor
 		 */
@@ -40,6 +63,9 @@ define(['backbone'], function(Backbone) {
 				emission: [0.0, 0.0, 0.0, 1.0],
 				shininess: 1
 			};
+		},
+		enablePicking: function() {
+			this.pickingColor = getPickingColor();
 		},
 		get vectorCount() {
 			return (_ref = this.vertices ? _ref.length : 0) / this.vectorSize;
@@ -100,6 +126,24 @@ define(['backbone'], function(Backbone) {
 			gl.setScalarUniform('uUseSpecMap', !!this.specMap, 'i');
 
 			this.drawInternal();
+			gl.bindVertexArray(null);
+		},
+		pickingDraw: function() {
+			gl.bindVertexArray(this.vao);
+
+			var mPosition = mat4.create();
+			mat4.translate(mPosition, mPosition, [this.x, this.y, this.z]);
+			if (this.rotateX != 0) mat4.rotateX(mPosition, mPosition, GL.degToRad(this.rotateX));
+			if (this.rotateY != 0) mat4.rotateY(mPosition, mPosition, GL.degToRad(this.rotateY));
+			if (this.rotateZ != 0) mat4.rotateZ(mPosition, mPosition, GL.degToRad(this.rotateZ));
+
+			mat4.multiply(mPosition, mPosition, this.transform);
+
+			gl.setVecUniform('uPickingColor', this.pickingColor);
+			gl.setMatUniform('uTransform', mPosition);
+
+			this.drawInternal();
+
 			gl.bindVertexArray(null);
 		},
 		setupTexture: function(img, texture_num) {

@@ -54,6 +54,7 @@ function(Backbone, Antenna, Astronaut, Agena, Apollo, Vehicle, /*ISS,*/ Jupiter,
 
 					var Factory = objects[data[0].trim()];
 					var object = new Factory();
+					object.enablePicking();
 					object.setPosition(
 						parseFloat(data[1].trim()),
 						parseFloat(data[2].trim()),

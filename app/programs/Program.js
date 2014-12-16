@@ -44,9 +44,7 @@ define(['backbone'], function(Backbone) {
 			return this.cameras[this.selectedCamera];
 		},
 		draw: function() {
-			if (this.selectedCamera == -1) {
-				throw new Error('Can\'t draw without camera');
-			}
+			var cam = this.getCamera();
 
 			gl.setProgram(this.pgr);
 
@@ -82,7 +80,7 @@ define(['backbone'], function(Backbone) {
 			// ---------------
 
 			var pMatrix = mat4.create();
-			var cam = this.getCamera();
+
 			mat4.multiply(pMatrix, this.mProjection, cam.getMatrix());
 			gl.setMatUniform('pMatrix', pMatrix);
 			gl.setVecUniform('uCameraPosition', cam.getPosition());
