@@ -48,6 +48,8 @@ define(['backbone'], function(Backbone) {
 				throw new Error('Can\'t draw without camera');
 			}
 
+			gl.setProgram(this.pgr);
+
 			// --- LIHGTS ---
 
 			var tex = gl.ctx.createTexture();

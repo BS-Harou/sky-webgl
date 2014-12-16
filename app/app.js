@@ -1,8 +1,8 @@
 define([
 	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram', 'lights/Light',
-	'Config'
+	'Config', 'programs/SkyboxProgram', 'objects/SkyboxCube', 'objects/Plain'
 ],
-function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Config) {
+function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Config, SkyboxProgram, SkyboxCube, Plain) {
 
 
 	// SETUP START
@@ -11,9 +11,22 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	var keys = new KeyHandler();
 	keys.startListening();
 
-	var pointerLock = new PointerLock(c);
+	//var pointerLock = new PointerLock(c);
 
 	// SETUP END
+
+	// SKYBOX
+	var skyboxProgram = new SkyboxProgram();
+
+	var skyboxCube = new SkyboxCube(200, 200, 200);
+	skyboxCube.setPosition(0, 0, 0);
+	skyboxProgram.addObject(skyboxCube);
+
+
+
+	// END SKYBOX
+
+
 
 	var program = new ClassicProgram();
 
@@ -35,11 +48,6 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		program.addObject(box);
 	}
 
-
-	/*box = new Box(0.4, 0.2, 1.6);
-	box.y += 1.6*4;
-	box.z += 0.2;
-	program.addObject(box);*/
 
 
 
@@ -89,10 +97,10 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	// OTHER OBJECTS
-	/*var antenna = new Antenna();
-	antenna.setPosition(-2, 2, 1);
-	program.addObject(antenna);
-	*/
+	//var antenna = new Antenna();
+	//antenna.setPosition(-2, 2, 1);
+	//program.addObject(antenna);
+
 
 	var config = new Config(program);
 	config.loadModels();
@@ -124,6 +132,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	camera.computeUp();
 
 	program.addCamera(camera);
+	skyboxProgram.addCamera(camera);
 
 	window.camera = camera;
 	window.program = program;
@@ -206,28 +215,6 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 			program.nextCamera();
 
-			/*
-
-			var newSelectedCamera = (selectedCamera + 1) % 3;
-
-			//if (newSelectedCamera == 0) {
-
-				var dynamicCamera = [
-					[cameraX, cameraY + yPosition, cameraZ + 0.05], // eye xyz
-					[cameraX + centerX, cameraY + centerY + yPosition, cameraZ], // center xyz
-					[0.0, 0.0, 1.0]   // up vector
-				];
-
-				if (newSelectedCamera == 0) {
-					camera.transition.start(staticCameras[1], dynamicCamera);
-				} else if (newSelectedCamera == 1) {
-					camera.transition.start(dynamicCamera, staticCameras[0]);
-				} else if (newSelectedCamera == 2) {
-					camera.transition.start(staticCameras[0], staticCameras[1]);
-				}
-			//}
-			selectedCamera = newSelectedCamera;
-			*/
 
 
 			keys.setKey('H', false);
@@ -244,6 +231,8 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		spaceShipLight.x = spaceship.x;
 		spaceShipLight.y = spaceship.y;
 		spaceShipLight.z = spaceship.z + 1;
+
+		skyboxCube.setPosition(camera.x, camera.y, camera.z);
 
 
 		document.querySelector('output').innerHTML = Math.round(1000 / fps);
@@ -279,19 +268,10 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 		//}
-		/*
-		 else {
-			var camVectors = camera.transition.getStep(camera.transition.step++);
-			if (camera.transition.step >= 9) camera.transition.stop();
-			camera.setPosition.apply(camera, camVectors[0]);
-			camera.setCenter.apply(camera, camVectors[1]);
-			camera.setUp.apply(camera, camVectors[2]);
-		}
 
-		mat4.multiply(pMatrix, mProjection, camera.getMatrix());
-		*/
 
 		gl.clear();
+		skyboxProgram.draw();
 		program.draw();
 
 
@@ -306,6 +286,8 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		}
 
 	}
+
+
 
 
 

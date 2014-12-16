@@ -75,6 +75,10 @@ GL.prototype = {
 
 		return program;
 	},
+	setProgram: function(program) {
+		this._currentProgram = program;
+		this.ctx.useProgram(program);
+	},
 	addShader: function(id) {
 		var shaderScript = document.getElementById(id);
 		if (!shaderScript) throw 'Error: No element with id "' + id + '"';
