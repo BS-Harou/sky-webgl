@@ -3,37 +3,7 @@ define(['objects/Box', 'image!app/models/stars.jpg'], function(Box, texImage) {
 		initialize: function(width, height, length) {
 			Box.prototype.initialize.apply(this, arguments);
 
-			this.textures = [
-				0, 1,
-				1, 1,
-				1, 0,
-				0, 0,
-
-				0, 1,
-				0, 0,
-				1, 1,
-				1, 0,
-
-				0, 1,
-				0, 0,
-				1, 1,
-				1, 0,
-
-				0, 1,
-				0, 0,
-				1, 1,
-				1, 0,
-
-				0, 1,
-				1, 1,
-				1, 0,
-				0, 0,
-
-				0, 1,
-				1, 1,
-				1, 0,
-				0, 0
-			];
+			this.textures = Box.BOX_TEXTURES;
 
 			gl.bindVertexArray(this.vao);
 
