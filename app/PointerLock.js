@@ -18,7 +18,7 @@ define(['backbone'], function(Backbone) {
 
 
 			document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
-			this.el.addEventListener('click', this.handleClick)
+			document.getElementById('fullscreen').addEventListener('click', this.handleClick);
 			document.addEventListener('pointerlockchange', this.handlePointerLockChange);
 			document.addEventListener('pointerlockerror', this.handlePointerLockError);
 

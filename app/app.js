@@ -15,7 +15,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	var keys = new KeyHandler();
 	keys.startListening();
 
-	//var pointerLock = new PointerLock(c);
+	var pointerLock = new PointerLock(c);
 
 	// SETUP END
 
