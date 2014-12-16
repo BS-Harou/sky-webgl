@@ -5,6 +5,7 @@ uniform vec4 uGlobalAmbient;
 uniform sampler2D uTexture;
 varying vec2 vTexCoords;
 uniform int uUseTextures;
+uniform mat4 uTextureTransform;
 
 uniform sampler2D uMapTexture;
 uniform int uUseSpecMap;
@@ -38,6 +39,12 @@ void main() {
 		// TODO, change 5.0 to LINES_PER_LIGHT and solve the onversion issue
 		float p = 5.0 * float(uNumberOfLights);
 
+		/**
+		 * Phong light model
+		 * We use float-texture to pass arbitrary amount of lights to shaders
+		 * Each light has 5 texels
+		 * The 'blue' float of last texel detemines whether it is directional or point light
+		 */
 		vec3 lightPosition = texture2D(uLights, vec2((float(i * LINES_PER_LIGHT) + 0.5) / p, 0.5)).xyz;
 		vec4 lightAmbient = texture2D(uLights,  vec2((float(i * LINES_PER_LIGHT) + 1.5) / p, 0.5));
 		vec4 lightDiffuse = texture2D(uLights,  vec2((float(i * LINES_PER_LIGHT) + 2.5) / p, 0.5));
@@ -61,7 +68,7 @@ void main() {
 		vec4 diffuseReflected = max(dot(L, N), 0.0) * lightDiffuse * uMaterialDiffuse;
 
 		if (uUseTextures == 1) {
-			diffuseReflected = diffuseReflected * texture2D(uTexture, vTexCoords);
+			diffuseReflected = diffuseReflected * texture2D(uTexture, (uTextureTransform * vec4(vTexCoords, 0, 1)).st);
 		}
 
 		vec4 specularReflected = vec4(0.0, 0.0, 0.0, 1.0);
@@ -70,7 +77,7 @@ void main() {
     	}
 
     	if (uUseSpecMap == 1) {
-			specularReflected = specularReflected * texture2D(uMapTexture, vTexCoords);
+			specularReflected = specularReflected * texture2D(uMapTexture, (uTextureTransform * vec4(vTexCoords, 0, 1)).st);
 		}
 
 		float attenuationFactor;

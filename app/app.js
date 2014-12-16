@@ -1,8 +1,8 @@
 define([
 	'jquery', 'objects/Ship', 'objects/Box', 'Camera', 'KeyHandler', 'PointerLock', 'programs/ClassicProgram', 'lights/Light',
-	'Config', 'programs/SkyboxProgram', 'objects/SkyboxCube', 'objects/Plain'
+	'Config', 'programs/SkyboxProgram', 'objects/SkyboxCube', 'objects/ArrowBox'
 ],
-function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Config, SkyboxProgram, SkyboxCube, Plain) {
+function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, Config, SkyboxProgram, SkyboxCube, ArrowBox) {
 
 
 	// SETUP START
@@ -41,7 +41,11 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 			continue;
 		}
 		last = false;
-		box = new Box(0.8, 0.05, 1.6);
+		if (i == 3) {
+			box = new ArrowBox(0.8, 0.05, 1.6);
+		} else {
+			box = new Box(0.8, 0.05, 1.6);
+		}
 
 		if (i > 3) xOffset += (Math.random() - 0.5) / 2;
 		box.setPosition(box.x + xOffset, box.y +  1.6 * i, -0.2);

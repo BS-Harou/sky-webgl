@@ -19,12 +19,14 @@ define(['backbone'], function(Backbone) {
 		color: null,
 		material: null,
 		texture: null,
+		textureTransform: null,
 		specMap: null,
 		/**
 		 * @constructor
 		 */
 		initialize: function() {
 			this.transform = mat4.create();
+			this.textureTransform = mat4.create();
 			this.vertices = [];
 			this.vertexNormals = [];
 			this.indices = [];
@@ -73,6 +75,8 @@ define(['backbone'], function(Backbone) {
 			mat4.invert(mNorm, mPosition);
 			mat4.transpose(mNorm, mNorm);
 			gl.setMatUniform('uNormalTransform', mNorm);
+
+			gl.setMatUniform('uTextureTransform', this.textureTransform);
 
 			gl.setVecUniform('uMaterialAmbient', this.material.ambient);
 			gl.setVecUniform('uMaterialDiffuse', this.material.diffuse);
