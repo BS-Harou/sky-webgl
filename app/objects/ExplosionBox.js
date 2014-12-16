@@ -4,6 +4,7 @@ define(['objects/Box', 'image!app/models/explosion.png'], function(Box, texImage
 		animationRows: 4,
 		animationColumns: 4,
 		animationImages: 16,
+		animationEnabled: true,
 		initialize: function(width, height, length) {
 			Box.prototype.initialize.apply(this, arguments);
 
@@ -19,6 +20,9 @@ define(['objects/Box', 'image!app/models/explosion.png'], function(Box, texImage
 			this.texture = this.setupTexture(texImage, gl.ctx.TEXTURE0);
 			gl.bindVertexArray(null);
 		},
+		handlePick: function() {
+			this.animationEnabled = !this.animationEnabled;
+		},
 		drawInternal: function() {
 			this.textureTransform = mat4.create();
 			var scaleBy = 0.25;
@@ -30,7 +34,10 @@ define(['objects/Box', 'image!app/models/explosion.png'], function(Box, texImage
 
 			mat4.translate(this.textureTransform, this.textureTransform, [moveToRight, -moveToTop, 0]);
 
-			this.animationStep += 0.25;
+			if (this.animationEnabled) {
+				this.animationStep += 0.25;
+			}
+
 			if (this.animationStep >= this.animationImages) {
 				this.animationStep = 0;
 			}

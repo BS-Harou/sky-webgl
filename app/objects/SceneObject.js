@@ -7,7 +7,7 @@ define(['backbone'], function(Backbone) {
 	var pickingColorG = 0;
 	var pickingColorB = 0;
 
-	function getPickingColor() {
+	function getPickingColor(object) {
 		pickingColorB += 5;
 		if (pickingColorB >= 255) {
 			pickingColorB = 0;
@@ -20,6 +20,8 @@ define(['backbone'], function(Backbone) {
 		if (pickingColorR >= 255) {
 			throw 'Out of picking colors';
 		}
+
+		gl.pickingObjects[pickingColorR + ':' + pickingColorG + ':' + pickingColorB] = object;
 
 		return [pickingColorR / 255, pickingColorG / 255, pickingColorB / 255, 1];
 	}
@@ -65,7 +67,13 @@ define(['backbone'], function(Backbone) {
 			};
 		},
 		enablePicking: function() {
-			this.pickingColor = getPickingColor();
+			this.pickingColor = getPickingColor(this);
+		},
+		/**
+		 * Called when object is picked by mouse
+		 */
+		handlePick: function() {
+			console.log('Object picked, but no action attached.');
 		},
 		get vectorCount() {
 			return (_ref = this.vertices ? _ref.length : 0) / this.vectorSize;
@@ -128,6 +136,9 @@ define(['backbone'], function(Backbone) {
 			this.drawInternal();
 			gl.bindVertexArray(null);
 		},
+		/**
+		 * Called when picking program is drawing (draws object only in picking color)
+		 */
 		pickingDraw: function() {
 			gl.bindVertexArray(this.vao);
 

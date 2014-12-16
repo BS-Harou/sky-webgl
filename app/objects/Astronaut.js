@@ -29,6 +29,11 @@ define(['objects/SceneObject', 'text!models/astronaut.obj'], function(SceneObjec
 			gl.setIndices(this.indices);
 			gl.bindVertexArray(null);
 		},
+		handlePick: function() {
+			this.material.ambient[0] += 0.1;
+			this.material.ambient[1] += 0.1;
+			this.material.ambient[2] += 0.1;
+		},
 		drawInternal: function() {
 			gl.render('elements', this.indices.length);
 		}

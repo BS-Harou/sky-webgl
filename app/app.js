@@ -10,6 +10,8 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	// SETUP START
 	window.gl = new GL(c);
 
+	gl.pickingObjects = {};
+
 	var keys = new KeyHandler();
 	keys.startListening();
 
@@ -47,6 +49,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 			box = new ArrowBox(0.8, 0.05, 1.6);
 		} else if (i == 1) {
 			box = new ExplosionBox(0.8, 0.05, 1.6);
+			box.enablePicking();
 		} else {
 			box = new Box(0.8, 0.05, 1.6);
 		}
@@ -159,37 +162,36 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	/**
-	 * Picking
+	 * PICKING
 	 */
 	var pickingProgram = new PickingProgram(program);
 	var pickingFrameBuffer = gl.ctx.createFramebuffer();
-	var pickingRenderBuffer = gl.ctx.createRenderbuffer();
+	var pickingDepthBuffer = gl.ctx.createRenderbuffer();
+	var pickingColorBuffer = gl.ctx.createRenderbuffer();
 	var pickingMap = new Uint8Array(4);
 
-	var pickingTexture = gl.ctx.createTexture();
-	gl.ctx.activeTexture(gl.ctx.TEXTURE3);
-    gl.ctx.bindTexture(gl.ctx.TEXTURE_2D, pickingTexture);
-    gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_MAG_FILTER, gl.ctx.NEAREST);
-    gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_MIN_FILTER, gl.ctx.NEAREST);
-    gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_WRAP_S, gl.ctx.CLAMP_TO_EDGE);
-	gl.ctx.texParameteri(gl.ctx.TEXTURE_2D, gl.ctx.TEXTURE_WRAP_T, gl.ctx.CLAMP_TO_EDGE);
-
-    gl.ctx.texImage2D(gl.ctx.TEXTURE_2D, 0, gl.ctx.RGBA, 1024, 1024, 0, gl.ctx.RGBA, gl.ctx.UNSIGNED_BYTE, null);
 
 	gl.ctx.bindFramebuffer(gl.ctx.FRAMEBUFFER, pickingFrameBuffer);
 	gl.ctx.viewport(0, 0, gl.el.width, gl.el.height);
-	gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, pickingRenderBuffer);
 
-    //gl.ctx.framebufferRenderbuffer(gl.ctx.FRAMEBUFFER, gl.ctx.COLOR_ATTACHMENT0, gl.ctx.RENDERBUFFER, pickingRenderBuffer);
-    //gl.ctx.renderbufferStorage(gl.ctx.RENDERBUFFER, gl.ctx.RGBA4, 16, 16);
-    gl.ctx.framebufferTexture2D(gl.ctx.FRAMEBUFFER, gl.ctx.COLOR_ATTACHMENT0, gl.ctx.TEXTURE_2D, pickingTexture, 0);
+	gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, pickingColorBuffer);
+    gl.ctx.renderbufferStorage(gl.ctx.RENDERBUFFER, gl.ctx.RGBA4, gl.el.width, gl.el.height);
 
-    gl.ctx.framebufferRenderbuffer(gl.ctx.FRAMEBUFFER, gl.ctx.DEPTH_ATTACHMENT, gl.ctx.RENDERBUFFER, pickingRenderBuffer);
-    gl.ctx.renderbufferStorage(gl.ctx.RENDERBUFFER, gl.ctx.DEPTH_COMPONENT16, 1024, 1024);
+    gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, pickingDepthBuffer);
+    gl.ctx.renderbufferStorage(gl.ctx.RENDERBUFFER, gl.ctx.DEPTH_COMPONENT16, gl.el.width, gl.el.height);
+
+
+    gl.ctx.framebufferRenderbuffer(gl.ctx.FRAMEBUFFER, gl.ctx.COLOR_ATTACHMENT0, gl.ctx.RENDERBUFFER, pickingColorBuffer);
+    gl.ctx.framebufferRenderbuffer(gl.ctx.FRAMEBUFFER, gl.ctx.DEPTH_ATTACHMENT, gl.ctx.RENDERBUFFER, pickingDepthBuffer);
+
 
     gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, null);
     gl.ctx.bindFramebuffer(gl.ctx.FRAMEBUFFER, null);
     gl.ctx.viewport(0, 0, gl.el.width, gl.el.height);
+
+    /**
+     * PICKING END
+     */
 
 	function handleKeys(ms) {
 		if (keys.isDown('LEFT')) {
@@ -315,15 +317,20 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		if (mouse.picking) {
 			gl.ctx.bindFramebuffer(gl.ctx.FRAMEBUFFER, pickingFrameBuffer);
 			gl.ctx.viewport(0, 0, gl.el.width, gl.el.height);
-			gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, pickingRenderBuffer);
 
 			gl.clear();
 			pickingProgram.draw();
 
 			gl.ctx.readPixels(mouse.clickX, gl.el.height - mouse.clickY, 1, 1, gl.ctx.RGBA, gl.ctx.UNSIGNED_BYTE, pickingMap);
-			console.log(pickingMap);
 
-			gl.ctx.bindRenderbuffer(gl.ctx.RENDERBUFFER, null);
+			if (pickingMap[0] + pickingMap[1] + pickingMap[2] > 0) {
+				var id = pickingMap[0] + ':' + pickingMap[1] + ':' + pickingMap[2];
+				var object = gl.pickingObjects[id];
+				if (object) {
+					object.handlePick();
+				}
+			}
+
 			gl.ctx.bindFramebuffer(gl.ctx.FRAMEBUFFER, null);
 			gl.ctx.viewport(0, 0, gl.el.width, gl.el.height);
 			mouse.picking = false;

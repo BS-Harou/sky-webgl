@@ -30,6 +30,12 @@ define(['objects/SceneObject', 'text!models/antenna.obj', 'image!app/models/ante
 			gl.setIndices(this.indices);
 			gl.bindVertexArray(null);
 		},
+		/**
+		 * Called when object is picked by mouse
+		 */
+		handlePick: function() {
+			mat4.rotateZ(this.transform, this.transform, GL.degToRad(10));
+		},
 		drawInternal: function() {
 			gl.render('elements', this.indices.length);
 		}
