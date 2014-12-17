@@ -5,11 +5,11 @@ require.config({
 	waitSeconds: 0,
 
 	paths: {
-		jquery: '../libs/jquery.min',
-		underscore: '../libs/underscore.min',
-		backbone: '../libs/backbone.min',
-		text: '../libs/text',
-		image: '../libs/image',
+		jquery: '../thirdparty/jquery.min',
+		underscore: '../thirdparty/underscore.min',
+		backbone: '../thirdparty/backbone.min',
+		text: '../thirdparty/text',
+		image: '../thirdparty/image',
 	},
 
 	shim: {

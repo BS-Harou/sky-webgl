@@ -122,6 +122,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	globalDirectionalLight.ambient = [0,0,0,1];
 	globalDirectionalLight.specular = [0,0,0,1];
 	globalDirectionalLight.type = Light.DIRECTIONAL;
+	globalDirectionalLight.rot = 0;
 	globalDirectionalLight.setPosition(-1, -0.2, 0.5); // direction
 	program.addLight(globalDirectionalLight);
 
@@ -288,6 +289,10 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	function redraw(fps) {
+		globalDirectionalLight.rot++;
+		var lx = Math.sin(globalDirectionalLight.rot * (Math.PI/180));
+		var ly = Math.cos(globalDirectionalLight.rot * (Math.PI/180));
+		globalDirectionalLight.setPosition(-lx, -0.2, ly);
 
 		lantern2.rotateZ += 1;
 
