@@ -15,6 +15,7 @@ uniform sampler2D uLights;
 uniform int uNumberOfLights;
 const int LINES_PER_LIGHT = 5;
 const int MAX_LIGHTS = 64;
+const float E = 2.718281828459045;
 
 uniform vec4 uMaterialAmbient;
 uniform vec4 uMaterialDiffuse;
@@ -91,6 +92,12 @@ void main() {
 
 	}
 
-	gl_FragColor = finalColor;
+	// FOG
+	float dist = distance(uCameraPosition, vPos);
+	float density = 0.05;
+	float f =  pow(E, -(density * dist));
+	vec4 fogColor = vec4(0, 0, 0, 1);
+
+	gl_FragColor = f * finalColor + (1.0 -f ) * fogColor;
 
 }
