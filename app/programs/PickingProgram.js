@@ -1,5 +1,5 @@
 define([
-	'programs/Program', 'text!shaders/picking.vs', 'text!shaders/picking.fs'
+	'programs/Program', 'text!shaders/picking.vert', 'text!shaders/picking.frag'
 ], function(Program, vs, fs) {
 	var PickingProgram = Program.extend({
 		hostProgram: null,

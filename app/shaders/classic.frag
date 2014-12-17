@@ -31,6 +31,13 @@ varying vec3 vPos;
 varying vec3 vNormal;
 
 void main() {
+	float dist = distance(uCameraPosition, vPos);
+	if (dist > 20.0) {
+		gl_FragColor = vec4(0, 0, 0, 1);
+		return;
+	}
+
+
 	vec4 finalColor = uMaterialEmission + uGlobalAmbient;
 
 	/* TODO uNumberOfLights*/
@@ -93,7 +100,7 @@ void main() {
 	}
 
 	// FOG
-	float dist = distance(uCameraPosition, vPos);
+
 	float density = 0.05;
 	float f =  pow(E, -(density * dist));
 	vec4 fogColor = vec4(0, 0, 0, 1);

@@ -1,5 +1,5 @@
 define([
-	'programs/Program', 'text!shaders/skybox.vs', 'text!shaders/skybox.fs'
+	'programs/Program', 'text!shaders/skybox.vert', 'text!shaders/skybox.frag'
 ], function(Program, vs, fs) {
 	var SkyboxProgram = Program.extend({
 		initialize: function() {

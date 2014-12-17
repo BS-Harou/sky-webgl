@@ -1,5 +1,5 @@
 define([
-	'programs/Program', 'text!shaders/classic.vs', 'text!shaders/classic.fs'
+	'programs/Program', 'text!shaders/classic.vert', 'text!shaders/classic.frag'
 ], function(Program, vs, fs) {
 	var ClassicProgram = Program.extend({
 		initialize: function() {
