@@ -27,6 +27,7 @@ define(['backbone'], function(Backbone) {
 
 	var KeyHandler = Backbone.Model.extend({
 		keys: null,
+		onKeyDown: null,
 		/**
 		 * @constructor
 		 */
@@ -51,6 +52,9 @@ define(['backbone'], function(Backbone) {
 		},
 		handleKeyDown: function(e) {
 			this.keys[e.keyCode] = true;
+			if (this.onKeyDown) {
+				this.onKeyDown();
+			}
 		},
 		handleKeyUp: function(e) {
 			this.keys[e.keyCode] = false;

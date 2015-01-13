@@ -43,10 +43,19 @@ define(['backbone'], function(Backbone) {
 
 			return this.cameras[this.selectedCamera];
 		},
+		setGlobalUniforms: function() {
+			for (key in gl.globalUniforms) {
+				if (gl.globalUniforms.hasOwnProperty(key)) {
+					gl.setScalarUniform(key, gl.globalUniforms[key], 'i');
+				}
+			}
+		},
 		draw: function() {
 			var cam = this.getCamera();
 
 			gl.setProgram(this.pgr);
+
+			this.setGlobalUniforms();
 
 			// --- LIHGTS ---
 

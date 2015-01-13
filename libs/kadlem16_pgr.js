@@ -11,6 +11,8 @@ var GL = function(canvas) {
 	this.ctx.enable(this.ctx.DEPTH_TEST);
 
 	this._programs = [];
+	this.globalUniforms = {};
+
 	GL._extendWithVAO(this);
 	if (!this.ctx.getExtension('OES_texture_float')) {
 		alert('OES_texture_float not supported :/');
@@ -56,6 +58,7 @@ GL.prototype = {
 	ctx: null,
 	_programs: null,
 	_currentProgram: null,
+	globalUniforms: null,
 	createProgram: function(name, vs, fs) {
 		program = this.ctx.createProgram();
 		this._programs[name] = program;

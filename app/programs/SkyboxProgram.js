@@ -16,6 +16,7 @@ define([
 
 			mat4.multiply(pMatrix, this.mProjection, cam.getMatrix());
 
+			this.setGlobalUniforms();
 			gl.setMatUniform('pMatrix', pMatrix);
 
 			this.objects.forEach(function(object) {

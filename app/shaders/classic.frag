@@ -23,6 +23,8 @@ uniform vec4 uMaterialSpecular;
 uniform vec4 uMaterialEmission;
 uniform float uMaterialShininess;
 
+uniform int uUseMist;
+
 uniform vec3 uCameraPosition; // TODO
 uniform mat4 pMatrix;
 
@@ -32,8 +34,14 @@ varying vec3 vNormal;
 
 void main() {
 	float dist = distance(uCameraPosition, vPos);
+
+	vec4 fogColor = vec4(0.0, 0.0, 0.0, 1.0);
+	if (uUseMist == 1) {
+		fogColor = vec4(0.5, 0.5, 0.5, 1);
+	}
+
 	if (dist > 20.0) {
-		gl_FragColor = vec4(0, 0, 0, 1);
+		gl_FragColor = fogColor;
 		return;
 	}
 
@@ -101,9 +109,9 @@ void main() {
 
 	// FOG
 
-	float density = 0.05;
+	float density = 0.25;
 	float f =  pow(E, -(density * dist));
-	vec4 fogColor = vec4(0, 0, 0, 1);
+
 
 	gl_FragColor = f * finalColor + (1.0 -f ) * fogColor;
 

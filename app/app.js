@@ -81,8 +81,15 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	}
 
 
+	// MIST
 
+	gl.globalUniforms['uUseMist'] = 0;
 
+	keys.onKeyDown = function() {
+		if ( keys.isDown('M') ) {
+			gl.globalUniforms['uUseMist'] = 1 - gl.globalUniforms['uUseMist'];
+		}
+	}
 
 
 	// LIGHTS
@@ -113,7 +120,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 	var spaceShipLight = new Light();
-	spaceShipLight.attL = 0.1;
+	spaceShipLight.attL = 0.08;
 	spaceShipLight.setColor(0.1, 0.1, 0.1);
 	program.addLight(spaceShipLight);
 
@@ -357,6 +364,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 
 		gl.clear();
+
 
 		skyboxProgram.draw();
 		program.draw();
