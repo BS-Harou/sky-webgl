@@ -285,6 +285,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	}
 
 	function resetGame() {
+		keys.reset();
 		spaceship.setPosition(0, yPosition = 0.2, spaceship.defaultZ);
 
 		program.getCamera().rotateX = 0;

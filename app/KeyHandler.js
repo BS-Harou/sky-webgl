@@ -83,6 +83,9 @@ define(['backbone'], function(Backbone) {
 			keyCode = this.getKeyCode(keyCode);
 
 			return !!this.keys[keyCode];
+		},
+		reset: function() {
+			this.keys = [];
 		}
 	});
 
