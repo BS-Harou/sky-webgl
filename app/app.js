@@ -223,17 +223,18 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
      */
 
 	function handleKeys(ms) {
-		if (keys.isDown('LEFT')) {
+
+		if (keys.isDown('A')) {
 			spaceship.x -= spaceship.xSpeed * ms;
 			camera.x -= spaceship.xSpeed * ms;
-		} else if (keys.isDown('RIGHT')) {
+		} else if (keys.isDown('D')) {
 			spaceship.x += spaceship.xSpeed * ms;
 			camera.x += spaceship.xSpeed * ms;
 		}
 
-		if (keys.isDown('UP') && spaceship.speed < spaceship.maxSpeed) {
+		if (keys.isDown('W') && spaceship.speed < spaceship.maxSpeed) {
 			spaceship.speed += 0.3 * ms;
-		} else if (keys.isDown('DOWN')  && spaceship.speed > -spaceship.maxSpeed) {
+		} else if (keys.isDown('S')  && spaceship.speed > -spaceship.maxSpeed) {
 			spaceship.speed -= 0.3 * ms;
 		}
 
@@ -286,6 +287,7 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 
 	function resetGame() {
 		keys.reset();
+		spaceship.speed = 0;
 		spaceship.setPosition(0, yPosition = 0.2, spaceship.defaultZ);
 
 		program.getCamera().rotateX = 0;
@@ -327,20 +329,22 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		handleKeys(ms);
 
 
+		hit = hittest(spaceship);
 
 		if (spaceship.jumping) {
 			spaceship.z += spaceship.jumpSpeed;
 			spaceship.jumpSpeed -= 0.3 * ms;
-			if (spaceship.z < spaceship.defaultZ) {
+			if (spaceship.z < spaceship.defaultZ && hit) {
 				spaceship.z = spaceship.defaultZ;
 				spaceship.jumping = false;
 			}
-		} else if (!hittest(spaceship)) {
+		} else if (!hit) {
 			spaceship.z -= 0.02;
 		} else if (spaceship.z < spaceship.defaultZ) {
 			spaceship.z += 0.02;
-		} else if (spaceship.z > spaceship.defaultZ) {
+		} else if (spaceship.z >= spaceship.defaultZ) {
 			spaceship.z = spaceship.defaultZ;
+			
 		}
 
 
@@ -395,10 +399,10 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		}
 
 
-		if (keys.isDown('LEFT')) {
+		if (keys.isDown('A')) {
 			spaceship.rotateY = -10;
 			//mat4.rotateZ(spaceship.transform, spaceship.transform, GL.degToRad(-10));
-		} else if (keys.isDown('RIGHT')) {
+		} else if (keys.isDown('D')) {
 			spaceship.rotateY = 10;
 			//mat4.rotateZ(spaceship.transform, spaceship.transform, GL.degToRad(10));
 		} else {
