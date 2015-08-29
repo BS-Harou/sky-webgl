@@ -3,8 +3,10 @@ define([
 ],
 function(SceneObject, vehicleModel, texImage, specImage) {
 	var Ship = SceneObject.extend({
-		maxSpeed: 0.12,
-		xSpeed: 2,
+		maxSpeed: 0.18,
+		xSpeed: 0,
+		maxXSpeed: 4,
+		xSpeedIncrement: 0.5,
 		jumping: false,
 		jumpSpeed: 0,
 		x: 0,

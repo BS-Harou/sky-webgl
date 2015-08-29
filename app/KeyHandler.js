@@ -8,7 +8,7 @@ define(['backbone'], function(Backbone) {
 		'backspace': 8,
 		'tab': 9,
 		'enter': 12,
-		//16: 'shift',
+		'shift': 16,
 		//17: 'ctrl',
 		'capslock': 20,
 		'esc': 27,

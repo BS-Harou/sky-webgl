@@ -104,7 +104,6 @@ void main() {
 		}
 
 		finalColor += attenuationFactor * (ambientReflected + diffuseReflected + specularReflected);
-
 	}
 
 	// FOG

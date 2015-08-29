@@ -40,28 +40,44 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	var xOffset = 0;
 
 	/**
+	 * Offset by which is box getting wider or thiner
+	 */
+	var widthOffset = 0;
+
+
+	/**
 	 * Set to true if last box was skipped
 	 */
 	var last = false;
 
 	var allBoxes = [];
 	var box;
-	for (var i=0; i<100; i++) {
-		if (i > 10 && !last && Math.round(Math.random() * 10) == 5) {
+	for (var i=0; i<500; i++) {
+		if (i > 30 && !last && Math.round(Math.random() * 10) == 5) {
 			last = true;
 			continue;
 		}
 		last = false;
-		if (i == 3) {
-			box = new ArrowBox(0.8, 0.05, 1.6);
+
+		width = 0.8 + widthOffset;
+		if (i < 10) width += (10 - i) / 3;
+
+		if (i >= 20 && i < 30) {
+			box = new ArrowBox(width, 0.05, 1.6);
 		} else if (i == 1) {
-			box = new ExplosionBox(0.8, 0.05, 1.6);
+			box = new ExplosionBox(width, 0.05, 1.6);
 			box.enablePicking();
 		} else {
-			box = new Box(0.8, 0.05, 1.6);
+			
+			box = new Box(width, 0.05, 1.6);
 		}
 
-		if (i > 3) xOffset += (Math.random() - 0.5) * 1.5;
+		if (i > 8 && !(i >= 20 && i < 30)) {
+			xOffset += (Math.random() - 0.5) * 1.5;
+			widthOffset += (Math.random() - 0.5) * 0.5;
+			if (Math.abs(widthOffset) > 2) widthOffset /= 2;
+			if (Math.abs(widthOffset) < 0.4) widthOffset *= 2;
+		}
 		box.setPosition(box.x + xOffset, box.y +  1.6 * i, -0.2);
 		program.addObject(box);
 		allBoxes.push(box);
@@ -74,6 +90,10 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 				object.y > allBoxes[i].y - allBoxes[i].length / 2 && object.y < allBoxes[i].y + allBoxes[i].length / 2 &&
 				object.z > allBoxes[i].z + allBoxes[i].height / 2
 			) {
+				if (allBoxes[i] instanceof ArrowBox && spaceship.z <= spaceship.defaultZ) {
+					spaceship.speed *= 1.2;
+					if (spaceship.speed > spaceship.maxSpeed * 2) spaceship.speed = spaceship.maxSpeed * 2;
+				}
 				return true;
 			}
 		}
@@ -153,6 +173,17 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	spaceship.defaultZ = spaceship.z;
 	program.addObject(spaceship);
 
+	/**
+	 * Spaceship shadow
+	 */
+	var shadow = new Ship();
+	shadow.texture = null;
+	mat4.scale(shadow.transform, shadow.transform, [1, 0.005, 1]);
+	shadow.initialTransform = shadow.transform;
+	shadow.setColor(0.05, 0.05, 0.05, 1);
+	program.addObject(shadow);
+
+
 	setTimeout(function() {
 		GL.animate(redraw);
 		redraw();
@@ -225,11 +256,11 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 	function handleKeys(ms) {
 
 		if (keys.isDown('A')) {
-			spaceship.x -= spaceship.xSpeed * ms;
-			camera.x -= spaceship.xSpeed * ms;
+			spaceship.xSpeed -= spaceship.xSpeedIncrement;
 		} else if (keys.isDown('D')) {
-			spaceship.x += spaceship.xSpeed * ms;
-			camera.x += spaceship.xSpeed * ms;
+			spaceship.xSpeed += spaceship.xSpeedIncrement;
+			/*spaceship.x += spaceship.xSpeed * ms;
+			camera.x += spaceship.xSpeed * ms;*/
 		}
 
 		if (keys.isDown('W') && spaceship.speed < spaceship.maxSpeed) {
@@ -348,10 +379,23 @@ function($, Ship, Box, Camera, KeyHandler, PointerLock, ClassicProgram, Light, C
 		}
 
 
-		spaceship.speed *= 0.96;
+		spaceship.speed *= 0.98;
 		yPosition += spaceship.speed;
 		spaceship.y = yPosition;
 		camera.y += spaceship.speed;
+
+		
+		spaceship.x += spaceship.xSpeed * ms;
+		camera.x += spaceship.xSpeed * ms;
+		spaceship.xSpeed *= 0.85;
+
+		shadow.setPosition(spaceship.x, spaceship.y, -0.12);
+
+		var shadowTransform = mat4.clone(shadow.initialTransform);
+		shadowScale = 1 - (1 - 1 / (spaceship.z / spaceship.defaultZ)) / 4;
+		mat4.scale(shadowTransform, shadowTransform, [shadowScale, 1, shadowScale])
+		shadow.transform = shadowTransform;
+		
 
 
 		var centerX = Math.sin(GL.degToRad(program.getCamera().rotateX)) * 2;

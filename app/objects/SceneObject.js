@@ -174,8 +174,12 @@ define(['backbone'], function(Backbone) {
 		drawInternal: function() {
 			gl.render('elements', this.indices.length);
 		},
-		setColor: function(r, g, b) {
-			var color = [r, g ,b , 1];
+		setColor: function(r, g, b, a) {
+			if (typeof a != 'number') a = 1;
+
+			console.log(a);
+
+			var color = [r, g ,b, a];
 			this.material.ambient = this.material.specular = this.material.diffuse = color;
 		}
 	});
